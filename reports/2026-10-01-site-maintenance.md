@@ -48,7 +48,12 @@
 
 ## 发布验收
 
-线上复查结果和实际发布记录将在推送后的验收提交中补记。
+- 网站修复提交：[2904f82](https://github.com/zachgaozihe/docsify/commit/2904f8252832e21baaa4abdc4f891f702d761c04)。
+- 分支同步提交：[e638ec9](https://github.com/zachgaozihe/docsify/commit/e638ec91549ea39737771582515713b6a0bbf8c3)。保留 `main` 与 `develop` 的历史，使用验证过的网站内容；两个分支同时前进，无强制推送。
+- GitHub Pages [发布记录](https://github.com/zachgaozihe/docsify/actions/runs/36859213812)：`completed / success`。
+- 线上地址：[CS with AI](https://zachgaozihe.github.io/docsify/)。独立 Chrome 对实际线上网站的 **38 项检查全部通过**，包括八篇正文与目录、图表、公式、章节链接和刷新定位、手机尺寸、搜索、404 恢复和未捕获异常检查。
+- 已删除的课程网页导出地址返回 HTTP 404。保留的课程页为公开主题索引，不再呈现原加入说明。
+- 本地维护分支、远程 `main` 和 `develop` 已同步。本次验收时 GitHub 的默认分支名称仍为 `develop`；下面列出的管理员操作仍待完成。
 
 ## 管理设置与历史资料
 
