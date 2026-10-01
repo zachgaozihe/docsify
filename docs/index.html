@@ -1,285 +1,86 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
-    <title>CS with AI</title>
+    <title>CS with AI · Zach Gao</title>
+    <meta name="description" content="Zach Gao 的计算机科学与人工智能学习知识库：学习路线、公开课程、大学课程笔记和技术文章。" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:title" content="CS with AI · Zach Gao" />
+    <meta property="og:description" content="计算机科学与人工智能学习路线、公开课程和技术笔记。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://zachgaozihe.github.io/docsify/" />
     <link rel="icon" href="_media/book1.ico" />
-    <!-- <meta name="google-site-verification" content="6t0LoIeFksrjF4c9sqUEsVXiQNxLp2hgoqo0KryT-sE" /> -->
-    <meta name="keywords" content="doc,docs,documentation,gitbook,creator,generator,github,jekyll,github-pages" />
-    <meta name="description" content="A magical documentation generator." />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0" />
-    <!-- <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css" title="vue"/> -->
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/dark.css" title="dark" disabled />
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/buble.css" title="buble" disabled />
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/pure.css" title="pure" disabled />
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/dolphin.css" title="dolphin" disabled />
-    <link rel="stylesheet" href="src/css/vue.css" title="vue" />
+    <link rel="stylesheet" href="src/css/vue.css" />
     <link rel="stylesheet" href="src/css/toc.css" />
-    <!-- <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" /> -->
-
-    <style>
-        nav.app-nav li ul {
-            min-width: 100px;
-        }
-
-        #carbonads {
-            box-shadow: none !important;
-            width: auto !important;
-        }
-    </style>
-
-    <script>
-        (function () {
-            const lang = location.hash.match(/#\/(de-de|es|ru-ru|zh-cn)\//);
-
-            // Set html "lang" attribute based on URL
-            if (lang) {
-                document.documentElement.setAttribute('lang', lang[1]);
-            }
-        })();
-    </script>
+    <link rel="stylesheet" href="src/css/math.css" />
+    <link rel="stylesheet" href="src/css/site.css" />
 </head>
-
 <body>
-    <div id="app">Loading ...</div>
-    <script src="//cdn.jsdelivr.net/npm/docsify-plugin-carbon@1"></script>
+    <div id="app">正在加载学习知识库…</div>
+    <noscript>本网站需要 JavaScript。你也可以在 <a href="https://github.com/zachgaozihe/docsify/tree/main/docs">GitHub 仓库</a>阅读 Markdown 原文。</noscript>
     <script>
-        // Docsify configuration
         window.$docsify = {
-            alias: {
-                '.*?/awesome':
-                    'https://raw.githubusercontent.com/docsifyjs/awesome-docsify/master/$1',
-                '.*?/changelog':
-                    'https://raw.githubusercontent.com/docsifyjs/docsify/master/CHANGELOG.md',
-                '/en/(.*)':
-                    'https://cdn.jsdelivr.net/gh/docsifyjs/docsify@master/docs/$1',
-                '/es/(.*)':
-                    'https://raw.githubusercontent.com/docsifyjs/docs-es/master/$1',
-                '/de-de/(.*)':
-                    'https://raw.githubusercontent.com/docsifyjs/docs-de/master/$1',
-                '/ru-ru/(.*)':
-                    'https://raw.githubusercontent.com/docsifyjs/docs-ru/master/$1',
-                '/zh-cn/(.*)':
-                    'https://cdn.jsdelivr.net/gh/docsifyjs/docs-zh@master/$1',
-            },
-            auto2top: true,
-            // coverpage: true,
-            // repo: 'docsifyjs/docsify',
-            executeScript: true,
+            name: 'CS with AI',
+            nameLink: '#/',
+            themeColor: '#D7336C',
             loadSidebar: true,
             loadNavbar: true,
             mergeNavbar: true,
+            auto2top: true,
+            topMargin: 80,
             maxLevel: 3,
             subMaxLevel: 0,
-            ga: 'UA-106147152-1',
-            matomo: {
-                host: '//matomo.thunderwave.de',
-                id: 6,
-            },
-            themeColor: '#D7336C',
-            name: 'CS with AI',
-            nameLink: {
-                '/es/': '#/',
-                '/de-de/': '#/',
-                '/ru-ru/': '#/',
-                '/zh-cn/': '#/',
-                '/': '#/',
+            executeScript: false,
+            notFoundPage: 'src/inc/404.md',
+            search: {
+                paths: 'auto',
+                depth: 4,
+                maxAge: 3600000,
+                namespace: 'cs-with-ai-20261001',
+                placeholder: '搜索课程与笔记',
+                noData: '没有找到相关内容',
             },
             toc: {
                 scope: '.markdown-section',
                 headings: 'h1, h2, h3, h4',
-                <!-- title: 'Table of Contents', -->
+                title: '本页目录',
             },
-            notFoundPage: true, // 404 页面
-            notFoundPage: {
-                '/': 'src/inc/404.md',
-            },
-            search: {
-                noData: {
-                    '/es/': '¡No hay resultados!',
-                    '/de-de/': 'Keine Ergebnisse!',
-                    '/ru-ru/': 'Никаких результатов!',
-                    '/zh-cn/': '没有结果!',
-                    '/': 'No results!',
-                },
-                paths: 'auto',
-                placeholder: {
-                    '/es/': 'Buscar',
-                    '/de-de/': 'Suche',
-                    '/ru-ru/': 'Поиск',
-                    '/zh-cn/': '搜索',
-                    '/': 'search',
-                },
-                pathNamespaces: ['/es', '/de-de', '/ru-ru', '/zh-cn'],
-            },
-
-            mermaidConfig: {
-                querySelector: ".mermaid"
-            },
-            
+            mermaidConfig: { querySelector: '.mermaid' },
             latex: {
                 inlineMath: [['$', '$']],
                 displayMath: [['$$', '$$']],
                 customOptions: {
                     TeX: {
-                        equationNumbers: { autoNumber: "AMS" },
-                        Macros: {
-                            diffd: "\\,\\mathrm d",
-                            diffop: "D"
-                        }
-                    }
-                },
-                overflowScroll: false
-            },
-            skipLink: {
-                '/es/': 'Saltar al contenido principal',
-                '/de-de/': 'Ga naar de hoofdinhoud',
-                '/ru-ru/': 'Перейти к основному содержанию',
-                '/zh-cn/': '跳到主要内容',
-            },
-            vueComponents: {
-                'button-counter': {
-                    template: /* html */ `<button @click="count += 1">You clicked me {{ count }} times</button>`,
-                    data() {
-                        return {
-                            count: 0,
-                        };
+                        equationNumbers: { autoNumber: 'AMS' },
+                        Macros: { diffd: '\\,\\mathrm d', diffop: 'D' },
                     },
                 },
+                overflowScroll: true,
             },
-            vueGlobalOptions: {
-                data() {
-                    return {
-                        count: 0,
-                        message: 'Hello, World!',
-                        // Fake API response
-                        images: [
-                            { title: 'Image 1', url: 'https://picsum.photos/150?random=1' },
-                            { title: 'Image 2', url: 'https://picsum.photos/150?random=2' },
-                            { title: 'Image 3', url: 'https://picsum.photos/150?random=3' },
-                        ],
-                    };
-                },
-                computed: {
-                    timeOfDay() {
-                        const date = new Date();
-                        const hours = date.getHours();
-
-                        if (hours < 12) {
-                            return 'morning';
-                        } else if (hours < 18) {
-                            return 'afternoon';
-                        } else {
-                            return 'evening';
-                        }
-                    },
-                },
-                methods: {
-                    hello() {
-                        alert(this.message);
-                    },
-                },
-            },
-            vueMounts: {
-                '#counter': {
-                    data() {
-                        return {
-                            count: 0,
-                        };
-                    },
-                },
-            },
-            plugins: [
-                function () {
-                    DocsifyCarbon.create('CEBI6KQE', 'docsifyjsorg');
-                },
-                function (hook, vm) {
-                    hook.beforeEach(html => {
-                        if (/githubusercontent\.com/.test(vm.route.file)) {
-                            url = vm.route.file
-                                .replace('raw.githubusercontent.com', 'github.com')
-                                .replace(/\/master/, '/blob/master');
-                        } else if (/jsdelivr\.net/.test(vm.route.file)) {
-                            url = vm.route.file
-                                .replace('cdn.jsdelivr.net/gh', 'github.com')
-                                .replace('@master', '/blob/master');
-                        } else {
-                            url =
-                                'https://github.com/docsifyjs/docsify/blob/develop/docs/' +
-                                vm.route.file;
-                        }
-                        // const editHtml = '[:memo: Edit Document](' + url + ')\n';
-                        const editHtml = '';
-                        return (
-                            editHtml +
-                            html +
-                            '\n\n----\n\n' +
-                            // '<a href="https://docsify.js.org" target="_blank" style="color: inherit; font-weight: normal; text-decoration: none;">Powered by docsify</a><hr>'
-                            '<a href="#/" target="_self" style="color: inherit; font-weight: normal; text-decoration: none;"><br>:house: Back to Home</a><hr>'
-                        );
-                    });
-                },
-            ],
+            plugins: [function (hook, vm) {
+                hook.afterEach(function (html) {
+                    if (vm.route.path === '/') return html;
+                    return html + '<footer class="page-footer"><a href="#/">返回首页</a><span>CS with AI · Zach Gao</span></footer>';
+                });
+            }],
         };
     </script>
-
-
-    <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
-    <!-- <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script> -->
+    <!-- Keep exact versions together. Validate diagrams and formulas before upgrading. -->
+    <script src="https://cdn.jsdelivr.net/npm/docsify@4.13.1/lib/docsify.min.js"></script>
     <script src="src/js/search.js"></script>
-
-    <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/ga.min.js"></script>
-    <!-- <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/matomo.js"></script> -->
-    <!-- <script src="/src/js/matomo.js"></script> -->
-    <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/emoji.min.js"></script>
-    <script src="//unpkg.com/docsify/lib/plugins/emoji.min.js"></script>
-
-    <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/external-script.min.js"></script>
-    
-    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-markdown.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-nginx.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-php.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
-    <!-- <script src="//cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/docsify@4.13.1/lib/plugins/zoom-image.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify@4.13.1/lib/plugins/emoji.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-markdown.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
     <script src="src/js/toc.js"></script>
-    <!-- <script src="https://unpkg.com/docsify-toc@1.0.0/dist/toc.js"></script> -->
-
-
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_CHTML-full"></script>
-    <script src="//cdn.jsdelivr.net/npm/docsify-latex@0"></script>
-
-    <!-- Code highlighting -->
-    <script src="//unpkg.com/prismjs/components/prism-python.min.js"></script>
-    <script src="//unpkg.com/prismjs/components/prism-bash.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS_CHTML-full"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify-latex@0.5.2/dist/docsify-latex.min.js"></script>
     <script type="module">
-        import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.9.5/dist/mermaid.esm.min.mjs';
         mermaid.initialize({ startOnLoad: true });
         window.mermaid = mermaid;
     </script>
-    <script src="//unpkg.com/docsify-mermaid@2.0.1/dist/docsify-mermaid.js"></script>
-    <!-- <script src="//unpkg.com/docsify-mermaid-zoom/dist/docsify-mermaid-zoom.js"></script> -->
-
-    <!-- <script src="//unpkg.com/prismjs/components/prism-latex.js"></script> -->
-
-    <!-- math -->
-    <!-- <script src="https://notebook.js.org/plugin/js/docsify-katex.js"></script> -->
-
-    <!-- Katex for Latex support -->
-    <!-- <script src="//cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script> -->
-
-    <!-- <script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_HTML"></script> -->
-    <!-- <script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_CHTML"></script> -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml-full.js"></script> -->
-    <!-- <script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_SVG"></script>
-    <script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS_SVG"></script>
-    <script src="//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_SVG"></script> -->
-
-    <link rel="stylesheet" href="src/css/math.css" />
-
+    <script src="https://cdn.jsdelivr.net/npm/docsify-mermaid@2.0.1/dist/docsify-mermaid.js"></script>
 </body>
-
 </html>

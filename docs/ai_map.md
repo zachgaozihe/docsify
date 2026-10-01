@@ -1,4 +1,8 @@
-# Road Map
+# AI / CS 资源索引
+
+> 最近整理：2026-10-01。日期表示本站内容维护时间，课程年份保留所收录的历史版本；全部外链尚未逐一验证。
+
+本页集中维护课程网站、视频、教材与实验资源。选择学习顺序和查看各类课程的学习关注点，可阅读 [课程说明与学习安排](ai.md)。新增或修正课程链接时优先更新本页。
 
 ```mermaid
 graph LR
@@ -12,7 +16,7 @@ Intro --> Database --> Web
 
 | Module Name                      | Code | Provider                                               | Web                                                          | Video                                                        | Lab                                  | Year |
 | -------------------------------- | ---- | ------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------ | ---- |
-| Crash Course: Computer Science   |      | [Crash Course](https://thecrashcourse.com/topic/ai/)   | [🔗](https://github.com/1c7/crash-course-computer-science-chinese?tab=readme-ov-file) | [📺](https://www.bilibili.com/video/BV1EW411u7th) [📽️](https://www.youtube.com/@crashcourse/playlists) |                                      |      |
+| Crash Course: Computer Science   |      | [Crash Course](https://thecrashcourse.com/topic/computerscience/)   | [🔗](https://github.com/1c7/crash-course-computer-science-chinese?tab=readme-ov-file) | [📺](https://www.bilibili.com/video/BV1EW411u7th) [📽️](https://www.youtube.com/@crashcourse/playlists) |                                      |      |
 | Introduction to Computer Science | CS50 | [Harvard](https://cs50.harvard.edu/college/2023/fall/) | [🔗](https://cs50.harvard.edu/x/2023/)                        | [📺](https://www.youtube.com/playlist?list=PLhQjrBD2T380F_inVRXMIHCqLaNUd7bN4) | [💻](https://github.com/csfive/CS50x) | 2023 |
 
 ---
@@ -35,13 +39,15 @@ Intro --> Database --> Web
 | Programming Methodology                                | CS106A    | Stanford | [🔗](https://web.stanford.edu/class/cs106a/) | [📺](https://www.youtube.com/playlist?list=PL-h0BZdG_K4myglyF0owcVh9a0oO_arhD)(2017) |                                                              | 2023 |
 | Fundamentals of Programming                            | 15-112    | CMU      | [🔗](https://www.cs.cmu.edu/~112/index.html) |                                                              | [💻](https://www.kosbie.net/cmu/spring-23/15-112/schedule.html) | 2023 |
 
+补充历史入口：[CMU 15-112 · Kosbie Spring 2023](https://www.kosbie.net/cmu/spring-23/15-112/index.html)。
+
 ---
 
 ## Command Line
 
 | Module Name                               | Code   | Provider | Web                                                          | Video                                            | Lab  | Year |
 | ----------------------------------------- | ------ | -------- | ------------------------------------------------------------ | ------------------------------------------------ | ---- | ---- |
-| The Missing Semester of Your CS Education | 6.null | MIT      | [🔗](https://missing.csail.mit.edu/)                          | [📺](https://www.bilibili.com/video/BV1EW411u7th) |      | 2020 |
+| The Missing Semester of Your CS Education | 6.null | MIT      | [🔗](https://missing.csail.mit.edu/)                          | [📺 2020 官方视频入口](https://missing.csail.mit.edu/2020/) |      | 2020 |
 | The Art of Command Line                   |        |          | [🔗](https://github.com/jlevy/the-art-of-command-line/blob/master/README-zh.md) |                                                  |      | 2023 |
 | The Shell Scripting Tutorial              |        |          | [🔗](https://www.shellscript.sh/)                             |                                                  |      | 2023 |
 
@@ -85,12 +91,14 @@ Intro --> Database --> Web
 
 | Module Name                   | Code                                                         | Provider | Web                                                         | Video                                                        | Lab                                                  | Year |
 | ----------------------------- | ------------------------------------------------------------ | -------- | ----------------------------------------------------------- | ------------------------------------------------------------ | ---------------------------------------------------- | ---- |
-| Deep Learning                 | CS230                                                        | Stanford | [🔗](https://cs230.stanford.edu/)                            | [📺](https://www.youtube.com/playlist?list=PLoROMvodv4rOABXSygHTsbvUz4G_YQhOb)(2018) | [💻](https://github.com/PKUFlyingPig/CS229)           | 2023 |
+| Deep Learning                 | CS230                                                        | Stanford | [🔗](https://cs230.stanford.edu/)                            | [📺](https://www.youtube.com/playlist?list=PLoROMvodv4rOABXSygHTsbvUz4G_YQhOb)(2018) | [CS230 课程项目](https://cs230.stanford.edu/project/) | 2023 |
 | Deep Neural Networks          | CS182/282A                                                   | Berkeley | [🔗](https://inst.eecs.berkeley.edu/~cs182/fa23/)            | [📺](https://www.youtube.com/playlist?list=PLnocShPlK-Fs_62EXCDykgtQFbHGLMT7U) |                                                      | 2023 |
 | Introduction to Deep Learning | 11-485/785                                                   | CMU      | [🔗](https://deeplearning.cs.cmu.edu/F23/index.html)         | [📺](https://www.youtube.com/playlist?list=PLp-0K3kfddPzCnS4CqKphh-zT3aDwybDe) |                                                      | 2023 |
 | Intermediate Deep Learning    | 10-707 / 417/617                                             | CMU      | [🔗](https://deeplearning-cmu-10707.github.io/)              |                                                              |                                                      | 2019 |
 | Deep Learning                 | [HUNG-YI LEE](https://speech.ee.ntu.edu.tw/~hylee/index.html) | NTU      | [🔗](https://speech.ee.ntu.edu.tw/~hylee/ml/2022-spring.php) | [📺](https://www.bilibili.com/video/BV1Wv411h7kN?p=6&vd_source=1c2566d5aa4478055e55db87f43c0143) | [💻](https://github.com/Fafa-DL/Lhy_Machine_Learning) | 2022 |
 | Dive into Deep Learning       | Mu Li                                                        |          | [🔗](https://zh.d2l.ai/index.html)                           | [📺](https://space.bilibili.com/1567748478/channel/seriesdetail?sid=358497) |                                                      | 2021 |
+
+补充历史版本：[Berkeley CS182 Spring 2023](https://inst.eecs.berkeley.edu/~cs182/sp23/) · [Spring 2023 视频](https://www.youtube.com/playlist?list=PLnocShPlK-Fuo4Lq1aeyYc6D6Z6C2n2y9)。
 
 ---
 
@@ -118,7 +126,7 @@ Intro --> Database --> Web
 
 ---
 
-## # More
+## More
 
 - [Python for Everybody (PY4E)](https://www.py4e.com/)  
   [Videos](https://www.youtube.com/playlist?list=PLlRFEj9H3Oj7Bp8-DfGpfAfDBiblRfl5p)  
@@ -134,7 +142,7 @@ Intro --> Database --> Web
 
 - [提问的智慧](https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/main/README-zh_CN.md)
 
-## # UC Berkeley
+## UC Berkeley
 
 ### CS 88 / DATA C88C
 
@@ -145,7 +153,7 @@ Intro --> Database --> Web
 
 - [课程网站使用介绍](https://sp23.datastructur.es/materials/guides/old/misc/getting-started.html)
 
-## # MIT
+## MIT
 
 ### MIT - 6.100B (formerly 6.0002)
 
@@ -157,18 +165,18 @@ Intro --> Database --> Web
 - (full semester) Introduction to CS and Programming using Python
 - 网站：[6.100L 2023 spring](https://introcomp.mit.edu/6.100L_sp23)
 
-## # CMU
+## CMU
 
 - [CMU Recordings](https://scs.hosted.panopto.com/Panopto/Pages/Sessions/List.aspx#view=0&maxResults=250&page=1)
 
-## # AI Track
+## AI Track
 
 - [CMU Artificial Intelligence Program](http://coursecatalog.web.cmu.edu/schools-colleges/schoolofcomputerscience/artificialintelligence/#curriculumtextcontainer)
 
 - [MIT Artificial Intelligence and Decision Making (Course 6-4)](https://catalog.mit.edu/degree-charts/artifical-intelligence-decision-making-course-6-4/)
 - [MIT Computer Science and Engineering (Course 6-3)](https://catalog.mit.edu/degree-charts/computer-science-engineering-course-6-3/)
 
-## # Catalog of modules
+## Catalog of modules
 
 - [MIT](https://catalog.mit.edu/subjects/6/)
 

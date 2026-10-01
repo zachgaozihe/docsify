@@ -1,87 +1,69 @@
-<p align="center">
-  <a href="https://docsify.js.org">
-    <img alt="docsify" src="./docs/_media/icon.svg">
-  </a>
-</p>
+# CS with AI · Zach Gao
 
-<p align="center">
-  A magical documentation site generator.
-</p>
+这是我的计算机科学与人工智能学习知识库，整理学习路线、公开课程、大学课程笔记和技术文章。网站使用 Docsify 阅读 Markdown，由 GitHub Pages 托管。
 
-<p align="center">
-  <a href="#backers"><img alt="Backers on Open Collective" src="https://opencollective.com/docsify/backers/badge.svg?style=flat-square"></a>
-  <a href="#sponsors">
-    <img alt="Sponsors on Open Collective" src="https://opencollective.com/docsify/sponsors/badge.svg?style=flat-square"></a>
-  <a href="https://github.com/docsifyjs/docsify/actions/workflows/test.yml"><img src="https://github.com/docsifyjs/docsify/actions/workflows/test.yml/badge.svg" alt="Build & Test"></a>
-  <a href="https://www.npmjs.com/package/docsify"><img alt="npm" src="https://img.shields.io/npm/v/docsify.svg?style=flat-square"></a>
-  <a href="https://github.com/QingWei-Li/donate"><img alt="donate" src="https://img.shields.io/badge/%24-donate-ff69b4.svg?style=flat-square"></a>
-  <a href="https://discord.gg/3NwKFyR"><img alt="Join Discord community and chat about Docsify" src="https://img.shields.io/discord/713647066802421792.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2&cacheSeconds=60"></a>
-  <a href="https://gitpod.io/#https://github.com/docsifyjs/docsify"><img src="https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod" alt="Gitpod Ready-to-Code"></a>
-</p>
+- 网站：<https://zachgaozihe.github.io/docsify/>
+- 阅读首页：[docs/README.md](docs/README.md)
+- 内容目录：[docs/_sidebar.md](docs/_sidebar.md)
+- 网站配置与依赖：[docs/index.html](docs/index.html)
+- 更新记录：[reports](reports/)
 
-<p align="center">Gold Sponsor via <a href="https://opencollective.com/docsify">Open Collective</a></p>
+## 发布分支和目录
 
-<p align="center">
-  <a href="https://opencollective.com/docsify/order/3254">
-    <img src="https://opencollective.com/docsify/tiers/gold-sponsor.svg?avatarHeight=36">
-  </a>
-</p>
+**维护和发布统一使用 `main` 分支，GitHub Pages 的发布目录是 `/docs`。** 提交到其他分支不会自动更新网站。`develop` 保留用于兼容旧入口，不作为日常维护分支。
 
-Docsify turns one or more Markdown files into a Website, with no build process required.
+仓库此前的默认分支是 `develop`。本次更新没有修改 GitHub 的仓库默认分支设置，因此不要把“默认分支”和“发布分支”混为一谈。仓库管理员应在 GitHub **Settings → General → Default branch** 将默认分支设为 `main`，并在 **Settings → Pages → Build and deployment** 确认发布来源为 `main` / `/docs`。这些设置独立于文件内容。
 
-## Features
+## 新增或修改文章
 
-- No statically built html files
-- Simple and lightweight
-- Smart full-text search plugin
-- Multiple themes
-- Useful plugin API
-- Support embedded files
+1. 切换到 `main` 并获取最新内容；在 `docs/` 新建或编辑 Markdown 文件。文件名建议用英文，并保持链接中的大小写与实际文件完全一致。
+2. 在 [docs/_sidebar.md](docs/_sidebar.md) 加入新文章入口。搜索根据侧栏中的页面建立索引，遗漏入口的文章可能无法被搜索到。
+3. 写清来源、课程年份和本站整理日期。历史课程的年份表示原课程版本，整理日期不代表课程或全部外链已更新。校内资料标注“需要登录”。
+4. 本地预览并运行下面的检查，然后提交、推送 `main`。
+5. 在 GitHub **Actions** 确认 Pages 发布完成，打开线上页面复查改动。
 
-## Quick Start
+根目录的这份 README 是维护说明；`docs/README.md` 才是网站首页。导航在 `docs/_navbar.md`，404 页面在 `docs/src/inc/404.md`。插件配置集中放在 `docs/index.html`，固定完整版本后再升级。
 
-Get going fast by using a static web server or GitHub Pages with this ready-to-use [Docsify Template](https://github.com/docsifyjs/docsify-template), review the [quick start tutorial](https://docsify.js.org/#/quickstart) or jump right into a CodeSandbox example site with the button below.
+## 本地预览和检查
 
-[![Edit 307qqv236](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/307qqv236)
+在仓库根目录运行，需要 Python 3：
 
-## Showcase
+```sh
+python -m http.server 3000 --directory docs
+```
 
-A large collection of showcase projects are included in [awesome-docsify](https://github.com/docsifyjs/awesome-docsify#showcase).
+打开 <http://localhost:3000/>；结束预览时按 `Ctrl+C`。直接双击 HTML 文件可能因浏览器的本地文件限制无法加载文章。
 
-## Links
+在另一个终端运行：
 
-- [Documentation](https://docsify.js.org)
-- [Docsify CLI (Command Line Interface)](https://github.com/docsifyjs/docsify-cli)
-- CDN: [UNPKG](https://unpkg.com/docsify/) | [jsDelivr](https://cdn.jsdelivr.net/npm/docsify/) | [cdnjs](https://cdnjs.com/libraries/docsify)
-- [`develop` branch preview](https://docsify-preview.vercel.app/)
-- [Awesome docsify](https://github.com/docsifyjs/awesome-docsify)
-- [Community chat](https://discord.gg/3NwKFyR)
+```sh
+python scripts/check_site.py
+```
 
-## Contributing
+检查脚本只使用 Python 标准库，不安装依赖、不联网。它检查首页、八个主要内容页、导航和 404 页的本地链接及路径大小写；检查首页本地资源、npm 依赖完整版本和重复脚本；同时检查公开目录中是否重新出现已清理的登录导出和敏感字段。失败时退出码非零，输出不会包含敏感字段的值。
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md).
+`PASS` 表示这些静态检查通过，不能替代浏览器验证或外链检查。修改插件后，至少检查首页路线图、扩散模型公式、搜索、从一篇文章切换到另一篇时的目录、404 返回首页，以及手机宽度下的显示。搜索缓存最长约一小时，更新后旧结果可能短暂保留。
 
-## Backers
+## 更新与回退
 
-Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/docsify#backers)]
+每次修改提交清晰的说明；涉及导航、插件或页面布局的更新，在 `reports/` 保存更新报告，写明改动、验证结果和未完成事项。不要在报告中复制已删除的加入码、会话字段或个人标识。
 
-<a href="https://opencollective.com/docsify#backers" target="_blank"><img src="https://opencollective.com/docsify/backers.svg?width=890"></a>
+若上线后出现问题，可在 GitHub 打开相应提交并创建回退提交，或使用 `git revert <提交编号>`，然后将回退提交推送到 `main`。等待 Pages 再次发布，再确认线上恢复。优先保留正常提交历史，避免强制推送；回退涉及隐私清理的提交前，须先确保敏感文件不会随之重新公开。
 
-## Sponsors
+## 维护节奏
 
-Thank you for supporting this project！:heart: [[Become a sponsor](https://opencollective.com/docsify)]
+- **每次更新**：同步文章与侧栏，运行本地检查，预览相关页面，提交后检查发布状态和线上显示。
+- **每月**：抽查常用课程、视频及外链，修正失效入口；需要登录的资源注明访问要求；保留历史课程年份。
+- **每季度**：集中检查插件版本和兼容性，一次升级一组相关依赖；验证路线图、公式、搜索和目录后发布，保留可回退提交；合并重复资源清单。
 
-<img src="https://opencollective.com/docsify/sponsors.svg?width=890" />
+## 公开资料与历史隐私
 
-## Contributors
+`docs/` 是公开发布目录，不保存学校登录页面导出、会话参数、课程加入码或个人账户资料。课程资料保留作者与学校来源，只发布适合公开分享的整理内容。
 
-This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
-<a href="https://github.com/docsifyjs/docsify/graphs/contributors"><img src="https://opencollective.com/docsify/contributors.svg?width=890" /></a>
+删除当前文件不会清除 Git 历史、已有克隆或缓存。以前公开过的加入码若仍有效，应联系课程管理者更换；会话字段是否仍有效需要由账户或系统管理者确认。需要清理历史时另行安排，先评估协作者和旧链接的影响，不在日常维护中贸然重写历史。
 
-## License
+## 许可与反馈
 
-[MIT](LICENSE)
+网站基础代码沿用仓库的 [MIT 许可](LICENSE)。课程资料和转载文章的权利归原作者或学校所有，具体以对应页面的来源说明为准。
 
-## Special Thanks
-
-A preview of Docsify's PR and develop branch is <a href="https://vercel.com/?utm_source=docsifyjs&utm_campaign=oss" target="_blank">Powered by <img src="https://cdn.jsdelivr.net/gh/docsifyjs/docsify/docs/_media/vercel_logo.svg" alt="Vercel" width="133px"></a>
+失效链接或内容问题可以通过 [GitHub Issues](https://github.com/zachgaozihe/docsify/issues)反馈。

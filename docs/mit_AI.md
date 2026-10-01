@@ -1,5 +1,9 @@
 
-# Fundamentals
+# MIT AI 课程目录：Fundamentals
+
+> 最近整理：2026-10-01。日期表示本站内容维护时间，所收录的课程介绍保留历史版本；全部外链尚未逐一验证。
+
+本页摘录 MIT 课程目录中的 AI 与计算机相关模块，用于比较主题、先修要求与课程编号。课程安排可能变化，请以 [MIT 官方课程目录](https://catalog.mit.edu/subjects/6/) 为准。课程网站、视频和实验资源集中在 [AI / CS 资源索引](ai_map.md)。
 
 ## Programming & Software Engineering
 

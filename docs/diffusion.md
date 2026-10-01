@@ -1,6 +1,8 @@
 # 生成扩散模型漫谈（一）：DDPM = 拆楼 + 建楼 <!-- {docsify-ignore-all} -->
 
-> 本文转载自科学空间，原文链接见文末。
+> 作者：苏剑林。来源：[科学空间原文](https://kexue.fm/archives/9119)，原文发表于 2022-06-13。本文转载用于学习，正文保留原文语境。
+>
+> 最近整理：2026-10-01。日期表示本站内容维护时间，文中关于模型进展的描述对应原文发表时间；全部外链尚未逐一验证。转载与引用说明保留在文末。
 
 说到生成模型，[VAE](https://kexue.fm/tag/vae/)、[GAN](https://kexue.fm/tag/GAN/)可谓是“如雷贯耳”，本站也有过多次分享。此外，还有一些比较小众的选择，如[flow模型](https://kexue.fm/tag/flow/)、[VQ-VAE](https://kexue.fm/archives/6760)等，也颇有人气，尤其是VQ-VAE及其变体[VQ-GAN](https://arxiv.org/abs/2012.09841)，近期已经逐渐发展到“图像的Tokenizer”的地位，用来直接调用NLP的各种预训练方法。除了这些之外，还有一个本来更小众的选择——扩散模型（Diffusion Models）——正在生成模型领域“异军突起”，当前最先进的两个文本生成图像——OpenAI的[DALL·E 2](https://arxiv.org/abs/2204.06125)和Google的[Imagen](https://arxiv.org/abs/2205.11487)，都是基于扩散模型来完成的。
 

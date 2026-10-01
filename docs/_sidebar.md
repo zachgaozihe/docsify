@@ -1,46 +1,12 @@
-- General
-  - [AI Roadmap](ai_map.md)
-  - [AI Modules](ai.md)
-  <!-- - [MIT AI](mit_AI.md) -->
-  <!-- - [AI Roadmap](ai_roadmap.html) -->
-
-- Universities
-  - [MIT AI](mit_AI.md)
-
-- UoN
-  - [4039 DIS](4039DIS.md)
-  - [4035 SaN](SaN.md)
-
-- Details
-  - [Diffusion Model](diffusion.md)
-  - [Computer Networks (1)](networks_1.md)
-  - [Computer Networks (2)](networks_2.md)
-
-<!-- - Getting started
-
-  - [Quick start](quickstart.md)
-  - [Writing more pages](more-pages.md)
-  - [Custom navbar](custom-navbar.md)
-  - [Cover page](cover.md) -->
-
-<!-- - Customization
-
-  - [Configuration](configuration.md)
-  - [Themes](themes.md)
-  - [List of Plugins](plugins.md)
-  - [Write a Plugin](write-a-plugin.md)
-  - [Markdown configuration](markdown.md)
-  - [Language highlighting](language-highlight.md)
-  - [Emoji](emoji.md) -->
-
-<!-- - Guide
-
-  - [Deploy](deploy.md)
-  - [Helpers](helpers.md)
-  - [Vue compatibility](vue.md)
-  - [CDN](cdn.md)
-  - [Offline Mode (PWA)](pwa.md)
-  - [Embed Files](embed-files.md) -->
-
-<!-- - [Awesome docsify](awesome.md) -->
-<!-- - [Changelog](changelog.md) -->
+- [首页](/)
+- 学习路线与课程
+  - [CS / AI 学习路线](ai_map.md)
+  - [课程说明与学习资源](ai.md)
+  - [MIT AI 课程索引](mit_AI.md)
+- 大学课程笔记
+  - [COMP4039 数据库](4039DIS.md)
+  - [COMP4035 系统与网络](SaN.md)
+- 技术文章
+  - [扩散模型：DDPM](diffusion.md)
+  - [互联网协议（一）](networks_1.md)
+  - [互联网协议（二）](networks_2.md)

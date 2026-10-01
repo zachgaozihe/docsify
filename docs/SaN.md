@@ -1,326 +1,65 @@
-## Topic outline
+# COMP4035 Systems and Networks
 
--   -   Dear students, please note that: 
-        
-        -   You are formally enrolled in this course (module) ONLY if it appears in your 'My Nottingham' list of courses.
-        -   Being enrolled in the Moodle page and/or the Team for this course is no guarantee that you are formally enrolled in the module even if you are participating in all course activities.
-        -   Formal enrolment in your courses should have been completed a few weeks into each semester even if  changes were requested and approved. But in some cases, this might take a bit longer as later enrolments are processed. 
-        -   Please check your 'My Nottingham' regularly until you see there all the courses you expect to be enrolled into. 
-        -   Unless this is a compulsory course for you, it is your responsibility to check that you are eligible to take this course, please check the module specification and if in doubt, get confirmation from the module convenor. 
-        
-          
-        
-    -   ### Welcome to the module  
-        
-        Welcome to COMP4035! This module aims to give you a broad understanding of computer networks and concepts, computer systems and their administration. The module is split up into sections which will be displayed below. Each section then has several lectures and workshops associated with it.
-        
-    -   ### Module Convenor  
-        
-        <table><tbody><tr><td><p><strong><span>Name</span></strong></p></td><td><p><strong><span>Location</span></strong></p></td><td><p><strong><span>Office</span></strong></p></td></tr><tr><td>Gail Hopkins</td><td>Computer Science</td><td><p><span>C14</span></p></td></tr><tr><td><p><strong><span>Office Hours</span></strong></p></td><td>I am best contacted via email:</td><td>gail.hopkins@nottingham.ac.uk</td></tr></tbody></table>
-        
-    
-    -   #### Join the COMP4035 Microsoft Team:
-        
-        -   Open Microsoft Teams  
-            
-        -   Click on the Teams icon down the left hand side - this will show you all the teams you have 
-        -   Click on "Join or create team" (top right button) 
-        -   Select option "Join a team with a code" and enter the following code:  **1v37lpk**
-        
-    
--   -   **Timetable of Activities**
-        
-        **Lecture Engagement:** 
-        
-        Mondays 1-2pm C3, Exchange Building
-        
-        Tuesdays 12-1pm LT1, Exchange Building
-        
-        Thursdays 10-11am C33, Exchange Building
-        
-        Fridays NO LIVE SESSION
-        
-    -   ### Module Assessment Information  
-        
-    -   **Assessment Information**
-        
-        This module is assessed through one exam worth 75% of the module mark and one coursework worth 25% of the module mark.
-        
-        The coursework will be handed out in the next week and you will have 3 weeks in which to do it.
-        
-        The exam will be in January - exact details to be announced later.
-        
-    
-    -   **Coursework due date: 3pm Tuesday 7th November**
-        
-        **Submit via Moodle**
-        
-    
-    -   ### Past Exam Papers  
-        
-    
-    -   Please note, this exam was online and open book. The 2023 exam is in person and NOT open book.  
-        
-    -   Please note, this exam was online and open book. The 2023 exam is in person and NOT open book.
-        
-    
-    -   ### Sample Exam Paper  
-        
-        Below are two sample exam papers. Please be aware that in the second paper there are some questions that ask about material we didn't cover this year. Please just ignore these parts.
-        
-    
--   **Topics covered in this part of the module:**
-    
-    -   Introduction  
-        
-    -   Fundamentals  
-        
-    -   Unix Filestore  
-        
-    -   WORKSHOP – UNIX lab (Online)  
-        
-    -   Unix and I/O (Input/Output) Redirecting  
-        
-    -   Searching and Regular Expressions
-    -   Processes and Signals  
-        
-    -   WORKSHOP – UNIX lab (Online)  
-        
-    
-    -   ### Learning Material  
-        
-        Each week links to videos, quizzes and live lectures will be put here
-        
-    -   #### Week 1
-        
-    -   #### Join the COMP4035 Microsoft Team:
-        
-        -   Open Microsoft Teams  
-            
-        -   Click on the Teams icon down the left hand side - this will show you all the teams you have 
-        -   Click on "Join or create team" (top right button) 
-        -   Select option "Join a team with a code" and enter the following code:  ****1v37lpk****
-        
-    -   **Monday 2nd October 1pm, C3 Exchange Building**
-        
-    
-    -   Try this quiz either before you watch the videos (to get you thinking) or afterwards (to see what you've learnt).
-        
-        You will not be marked for this - it is just a bit of fun!
-        
-    -   **Tuesday 3rd October 12noon - LT1, Exchange Building**
-        
-    
-    -   **Please view the videos posted here (Sections 1-3) before the session**
-        
-        **During the session at 12 noon we will have a discussion on the material presented in the videos. I will NOT be presenting new material in the session**
-        
-    
-    -   **Thursday 5th October 10am - C33, Exchange Building**
-        
-    -   **Course text : Chapters 3, 4, 5, 7 and 8**
-        
-    
-    -   **10am Lecture engagement - Introduction to Unix**
-        
-    
-    -   **Friday 7th October 10am**
-        
-        #### **No live session**
-        
-    -   **Please see the** **exercise sheet below, which you should work through before next week.** 
-        
-    
-    -   #### Week 2
-        
-    -   This covers more than we look at in the module, so don't worry if you don't recognise some of the commands.
-        
-    
-    -   **Monday 9th October Lecture Q&A**
-        
-    
-    -   **Course text : Chapter 6, also Chapter 4 section 4.2 and Chapter 9 section 9.4**
-        
-    
-    -   [UnixIO.mp4](https://moodle.nottingham.ac.uk/pluginfile.php/9548004/mod_label/intro/UnixIO.mp4) Unix Input and Output Video  
-        I apologise for the logo stuck on the screen - I have been experimenting with recording software!  
-        
-    -   **Tuesday 10th October 12noon**
-        
-    
-    -   I had to stop recording this video part way through, hence you have two parts to watch
-        
-    
-    -   This is a great talk on how computer memory works, if you need an introduction to this
-        
-    -   This video explains the differences between processes and threads and why threads are considered "lightweight" and more efficient
-        
-    -   Good, informative article about processes and threads
-        
-    
-    -   **Thursday 12th October 10am**
-        
-        #### **Please note, this session will be in the main lab, A32, Computer Science. Please work through the lab sheets and I will be there to help.**
-        
-    
-    -   ...in case you are unable to copy it using the unix command at the start of the tutorial
-        
-    -   **Friday 14th October 4pm**
-        
-        #### ****No live session****
-        
-    
--   **Lectures and Workshops:**
-    
-    -   Signals and Transmission Media
-    -   Reliability and Channel Coding
-    -   Modulation and Multiplexing  
-        
-    
--   **Lectures and Workshops:**
-    
-    -   Local Area Networks
-    -   Coordination of Access to Networks
-    -   Extending LANs
-    -   WAN Technologies and Routing
-    -   Wireless Computing
-    
-      
-    
-    -   ### Learning Material  
-        
-    -   **Monday 23rd October, Live Session, C3**
-        
-        Please view the videos below before our session:
-        
-    
-    -   **Tuesday 24th** **October, live session, LT1**
-        
-        Please view the videos below before the session:
-        
-    
-    -   **Thursday 26th** **October**
-        
-        No live session. 
-        
-    -   **Friday 28th** **October**
-        
-        No live session
-        
-    -   **Monday 30th** **October**
-        
-        NO LIVE SESSION
-        
-        Reading/coursework week
-        
-    -   **Tuesday 31st** **October** 
-        
-        NO LIVE SESSION
-        
-        Reading/coursework week
-        
-    -   **Thursday 2nd** **November**
-        
-        NO LIVE SESSION
-        
-        Reading/coursework week
-        
-    -   **Friday 3rd Novembe****r**
-        
-        NO LIVE SESSION
-        
-        Reading/coursework week
-        
-    -   **Monday 6th November, live session, C3**
-        
-        Please watch the videos below before our session:
-        
-    
-    -   **Tuesday 7th November, live session LT1**
-        
-        Please watch the videos below before the session:
-        
-    
-    -   **Thursday 9th November**
-        
-        No live session
-        
-    -   **Friday 10th November**
-        
-        No live session
-        
-    -   **Monday 13th November**  
-        
-        NO LIVE SESSION
-        
-    -   **Tuesday 14th November**  
-        
-        NO LIVE SESSION
-        
-    -   **Thursday 16th November, Live Session, 10am C33**
-        
-        Please watch the videos below before the session:  
-        
-    
-    -   **Course text : Chapters 32 and 19**
-        
-    
-    -   **Friday 17th November, Live Session, 4pm C33**
-        
-        This session will be a catch-up session where we will discuss material already covered. If there is anything you would like me to cover in particular then please let me know.  
-        
-    -   In this session we went through a couple of questions from past exam papers
-        
-    
--   **Lectures and Workshops:**
-    
-    -   Internetworking
-    -   IP Addressing
-    -   Datagram Forwarding
-    -   Support Protocols and Technologies
-    -   TCP/IP Protocol Suite
-    
-      
-    
--   **Lectures and Workshops:**
-    
-    -   Disks and File Storage
-    -   Distributed File Systems
-    -   Distributed Applications
-    -   Directory Services
-    -   Security
-    
-    -   ### Learning Material  
-        
-    -   **Monday 4th December**
-        
-        Please watch the following videos before the session:
-        
-    
-    -   This is a magazine article comparing HDD and SSD in terms of what we've covered in the module but also some extra things and a bit of history :-)
-        
-    -   This is an article which describes the concept behind Logical Volumes (in the first few paragraphs). If you want to you can read further to find out how you can set them up but you \*don't\* need to for this module!
-        
-    -   **Tuesday 5th December**
-        
-        Please watch the following videos before the session:
-        
-    
-    -   A brief explanation of FTP and the two types of connections (channels)
-        
-    -   This is a very brief explanation of POP, IMAP and SMTP
-        
-    -   **Thursday 7th December**
-        
-        Revision Lecture
-        
-    
-    -   #### END OF MODULE :-)
-        
-    -   **Friday 8th December**
-        
-        No live session
-        
-    -   Here is a mind map of the module. If it is too confusing then please ignore it! Feel free to download and zoom in... :-)
-        
-    -   [![ModuleMindMap.jpg](https://moodle.nottingham.ac.uk/pluginfile.php/9548195/mod_label/intro/s_ModuleMindMap.jpg)](https://moodle.nottingham.ac.uk/pluginfile.php/9548195/mod_label/intro/ModuleMindMap.jpg)
+> 最近整理：2026-10-01。本页根据 2023–2024 学年的课程主题整理，日期表示本站内容维护时间；课程与外部资源仍以原提供方为准，全部外链尚未逐一验证。
+
+这是一份系统与网络的学习主题索引，便于复习和继续补充笔记。内容从 Unix 使用开始，再介绍网络通信与分布式系统。
+
+## Unix 与计算机系统
+
+- Unix 基础：命令行、目录与文件系统。
+- Unix Filestore：文件、目录和权限。
+- Unix 与 I/O：输入输出、重定向和管道。
+- 文本处理：搜索与正则表达式。
+- 进程、线程与信号。
+- 计算机内存的基本概念。
+
+学习时可把常用命令、输入输出示例和进程管理实验逐步补成自己的笔记。公开的命令行课程见 [AI / CS 资源索引 · Command Line](ai_map.md?id=command-line)。
+
+## 网络通信基础
+
+- 信号与传输介质（Signals and Transmission Media）。
+- 可靠性与信道编码（Reliability and Channel Coding）。
+- 调制与复用（Modulation and Multiplexing）。
+- 局域网（LAN）与网络访问协调。
+- 局域网扩展。
+- 广域网技术与路由。
+- 无线网络。
+
+复习重点是理解数据如何从传输介质进入网络，以及设备如何共享通信资源。
+
+## 互联网与 TCP/IP
+
+- 网络互联（Internetworking）。
+- IP 地址与子网。
+- 数据报转发。
+- 网络支持协议与技术。
+- TCP/IP 协议族。
+
+本站相关阅读：
+
+- [互联网协议入门（一）](networks_1.md)：从分层结构理解网络。
+- [互联网协议入门（二）](networks_2.md)：沿一次网页访问理解协议之间的配合。
+
+这两篇文章是 2012 年的入门资料，适合建立基础概念。
+
+## 存储与分布式系统
+
+- 磁盘与文件存储：HDD、SSD 的基本概念。
+- 逻辑卷（Logical Volumes）。
+- 分布式文件系统。
+- 分布式应用。
+- 目录服务。
+- 系统与网络安全。
+- FTP 的连接与通道。
+- 邮件协议：POP、IMAP、SMTP。
+
+## 校内学习资源
+
+以下资源来自 Nottingham Moodle，需要有相应课程权限的校内账户登录。登录后能否访问取决于课程是否仍保留该资源。
+
+- [Unix 输入输出视频（需登录）](https://moodle.nottingham.ac.uk/pluginfile.php/9548004/mod_label/intro/UnixIO.mp4)。
+- [课程思维导图（需登录）](https://moodle.nottingham.ac.uk/pluginfile.php/9548195/mod_label/intro/ModuleMindMap.jpg)。
+
+## 笔记维护
+
+新增笔记时，可按“概念说明 → 示例或实验 → 复习问题 → 参考来源”组织。课程年份与本站整理日期分别记录；校内材料只保留经确认适合公开的主题说明和登录入口。

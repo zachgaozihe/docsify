@@ -1,10 +1,3 @@
-- [Github](https://github.com/ZacharyGao/docsify)
-
-- [CS with AI](/)
-  
-- Docsify
-  - [:uk: English](/en/)
-  - [:cn: 简体中文](/zh-cn/)
-  - [:de: Deutsch](/de-de/)
-  - [:es: Español](/es/)
-  - [:ru: Русский](/ru-ru/)
+- [首页](/)
+- [学习路线](ai_map.md)
+- [GitHub](https://github.com/zachgaozihe/docsify)
