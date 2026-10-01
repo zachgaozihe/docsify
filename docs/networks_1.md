@@ -1,234 +1,261 @@
+# Introduction to Internet Protocols (Part I)
 
-# 互联网协议入门（一）
-
-> 作者：阮一峰。来源：[阮一峰的网络日志原文](https://www.ruanyifeng.com/blog/2012/05/internet_protocol_suite_part_i.html)，原文发表于 2012-05-31。本文转载用于学习，正文保留原文语境。
+> Author: Ruan Yifeng. Source: [the original article on Ruan Yifeng's blog](https://www.ruanyifeng.com/blog/2012/05/internet_protocol_suite_part_i.html), published on 2012-05-31. This is this site's English translation for study; the article retains the original historical context and simplified explanations.
 >
-> 最近整理：2026-10-01。日期表示本站内容维护时间，文章以历史实例介绍基础概念，文中的技术描述对应原文发表时间；全部外链尚未逐一验证。
+> Last maintained: 2026-10-01. This date records maintenance of the content on this site. The article introduces fundamental concepts through historical examples, and its technical descriptions reflect the original publication date. External links have not all been individually verified. The original illustrations are retained and may contain Chinese labels.
 
-![](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052901.jpg)
+![Introduction to the Internet and the protocols that connect computers.](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052901.jpg)
 
-我们每天使用互联网，你是否想过，它是如何实现的？
+*Figure: Introduction to the Internet and the protocols that connect computers.*
 
-全世界几十亿台电脑，连接在一起，两两通信。上海的某一块网卡送出信号，洛杉矶的另一块网卡居然就收到了，两者实际上根本不知道对方的物理位置，你不觉得这是很神奇的事情吗？
+We use the Internet every day. Have you ever wondered how it works?
 
-互联网的核心是一系列协议，总称为"互联网协议"（Internet Protocol Suite）。它们对电脑如何连接和组网，做出了详尽的规定。理解了这些协议，就理解了互联网的原理。
+Billions of computers around the world are connected and communicate with one another. A network interface card in Shanghai sends a signal, and another network interface card in Los Angeles receives it, even though neither knows the other's physical location. Isn't that remarkable?
 
-下面就是我的学习笔记。因为这些协议实在太复杂、太庞大，我想整理一个简洁的框架，帮助自己从总体上把握它们。为了保证简单易懂，我做了大量的简化，有些地方并不全面和精确，但是应该能够说清楚互联网的原理。
+At the heart of the Internet is a series of protocols, collectively called the Internet Protocol Suite. They define in detail how computers connect and form networks. Understanding these protocols means understanding the principles behind the Internet.
+
+The following are my study notes. These protocols are so complex and extensive that I wanted to put together a concise framework to help me understand them as a whole. To keep the explanation accessible, I have made many simplifications. Some details are incomplete or imprecise, but the explanation should still convey how the Internet works.
 
 \=================================================
 
-## **一、概述**
+## **1. Overview**
 
-### **1.1 五层模型**
+### **1.1 The Five-Layer Model**
 
-互联网的实现，分成好几层。每一层都有自己的功能，就像建筑物一样，每一层都靠下一层支持。
+The Internet is implemented in several layers. Each layer has its own function, much like a building in which each floor is supported by the one below.
 
-用户接触到的，只是最上面的一层，根本没有感觉到下面的层。要理解互联网，必须从最下层开始，自下而上理解每一层的功能。
+Users interact only with the topmost layer, without being aware of the layers underneath. To understand the Internet, we need to start at the bottom and work upward through the function of each layer.
 
-如何分层有不同的模型，有的模型分七层，有的分四层。我觉得，把互联网分成五层，比较容易解释。
+There are different models for dividing the layers: some have seven layers and others have four. I find a five-layer model easier to explain.
 
-![](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052902.png)
+![The five layers, from bottom to top: Physical, Link, Network, Transport, and Application.](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052902.png)
 
-如上图所示，最底下的一层叫做"实体层"（Physical Layer），最上面的一层叫做"应用层"（Application Layer），中间的三层（自下而上）分别是"链接层"（Link Layer）、"网络层"（Network Layer）和"传输层"（Transport Layer）。越下面的层，越靠近硬件；越上面的层，越靠近用户。
+*Figure: The five layers, from bottom to top: Physical, Link, Network, Transport, and Application.*
 
-它们叫什么名字，其实并不重要。只需要知道，互联网分成若干层就可以了。
+As shown above, the bottom layer is the Physical Layer and the top layer is the Application Layer. The three layers between them, from bottom to top, are the Link Layer, Network Layer, and Transport Layer. The lower a layer is, the closer it is to the hardware; the higher it is, the closer it is to the user.
 
-### **1.2 层与协议**
+The names themselves are not particularly important. What matters here is that the Internet is divided into several layers.
 
-每一层都是为了完成一种功能。为了实现这些功能，就需要大家都遵守共同的规则。
+### **1.2 Layers and Protocols**
 
-大家都遵守的规则，就叫做"协议"（protocol）。
+Each layer serves a particular function. To implement those functions, everyone must follow common rules.
 
-互联网的每一层，都定义了很多协议。这些协议的总称，就叫做"互联网协议"（Internet Protocol Suite）。它们是互联网的核心，下面介绍每一层的功能，主要就是介绍每一层的主要协议。
+A set of rules that everyone follows is called a protocol.
 
-## **二、实体层**
+Each layer of the Internet defines many protocols. Together, these are called the Internet Protocol Suite, which forms the core of the Internet. Explaining the function of each layer therefore largely means introducing its main protocols.
 
-我们从最底下的一层开始。
+## **2. The Physical Layer**
 
-电脑要组网，第一件事要干什么？当然是先把电脑连起来，可以用光缆、电缆、双绞线、无线电波等方式。
+Let's begin with the bottom layer.
 
-![](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052903.png)
+What is the first step in networking computers? Connecting them, of course. We can use fiber-optic cables, electrical cables, twisted-pair cables, radio waves, and other means.
 
-**这就叫做"实体层"，它就是把电脑连接起来的物理手段。它主要规定了网络的一些电气特性，作用是负责传送0和1的电信号。**
+![The Physical Layer connects computers and carries signals representing bits.](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052903.png)
 
-## **三、链接层**
+*Figure: The Physical Layer connects computers and carries signals representing bits.*
 
-### **3.1 定义**
+**This is the Physical Layer: the physical means of connecting computers. It primarily specifies the network's electrical characteristics and is responsible for transmitting electrical signals representing 0s and 1s.**
 
-单纯的0和1没有任何意义，必须规定解读方式：多少个电信号算一组？每个信号位有何意义？
+## **3. The Link Layer**
 
-**这就是"链接层"的功能，它在"实体层"的上方，确定了0和1的分组方式。**
+### **3.1 Definition**
 
-### **3.2 以太网协议**
+A stream of 0s and 1s has no meaning on its own. We need rules for interpreting it: how many electrical signals make up a group, and what does each bit mean?
 
-早期的时候，每家公司都有自己的电信号分组方式。逐渐地，一种叫做["以太网"](https://zh.wikipedia.org/wiki/%E4%BB%A5%E5%A4%AA%E7%BD%91)（Ethernet）的协议，占据了主导地位。
+**This is the function of the Link Layer. It sits above the Physical Layer and determines how 0s and 1s are grouped.**
 
-以太网规定，一组电信号构成一个数据包，叫做"帧"（Frame）。每一帧分成两个部分：标头（Head）和数据（Data）。
+### **3.2 Ethernet**
 
-![](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052904.png)
+In the early days, each company had its own way of grouping electrical signals. Gradually, a protocol called [Ethernet](https://zh.wikipedia.org/wiki/%E4%BB%A5%E5%A4%AA%E7%BD%91) became dominant.
 
-"标头"包含数据包的一些说明项，比如发送者、接受者、数据类型等等；"数据"则是数据包的具体内容。
+Ethernet specifies that a group of electrical signals forms a data packet called a frame. Each frame consists of two parts: a header and data.
 
-"标头"的长度，固定为18字节。"数据"的长度，最短为46字节，最长为1500字节。因此，整个"帧"最短为64字节，最长为1518字节。如果数据很长，就必须分割成多个帧进行发送。
+![An Ethernet frame contains a header and a data portion.](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052904.png)
 
-### **3.3 MAC地址**
+*Figure: An Ethernet frame contains a header and a data portion.*
 
-上面提到，以太网数据包的"标头"，包含了发送者和接受者的信息。那么，发送者和接受者是如何标识呢？
+The header contains information about the packet, such as its sender, recipient, and data type. The data portion contains the packet's actual content.
 
-以太网规定，连入网络的所有设备，都必须具有"网卡"接口。数据包必须是从一块网卡，传送到另一块网卡。网卡的地址，就是数据包的发送地址和接收地址，这叫做MAC地址。
+The header is fixed at 18 bytes. The data portion is at least 46 bytes and at most 1500 bytes. The complete frame is therefore between 64 and 1518 bytes long. If the data is too long, it must be split into multiple frames for transmission.
 
-![](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052905.jpg)
+### **3.3 MAC Addresses**
 
-每块网卡出厂的时候，都有一个全世界独一无二的MAC地址，长度是48个二进制位，通常用12个十六进制数表示。
+As mentioned above, an Ethernet packet's header includes information about its sender and recipient. How are they identified?
 
-![](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052906.png)
+Ethernet requires all devices connected to the network to have a network interface card. Packets travel from one network interface card to another. The addresses of these cards serve as the packet's sending and receiving addresses, and are called MAC addresses.
 
-前6个十六进制数是厂商编号，后6个是该厂商的网卡流水号。有了MAC地址，就可以定位网卡和数据包的路径了。
+![A network interface card provides the hardware interface to the network.](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052905.jpg)
 
-### **3.4 广播**
+*Figure: A network interface card provides the hardware interface to the network.*
 
-定义地址只是第一步，后面还有更多的步骤。
+Each network interface card receives a globally unique MAC address when it is manufactured. The address is 48 bits long and is usually written as 12 hexadecimal digits.
 
-首先，一块网卡怎么会知道另一块网卡的MAC地址？
+![A MAC address consists of 12 hexadecimal digits: 6 for the manufacturer and 6 for the card identifier.](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052906.png)
 
-回答是有一种ARP协议，可以解决这个问题。这个留到后面介绍，这里只需要知道，以太网数据包必须知道接收方的MAC地址，然后才能发送。
+*Figure: A MAC address consists of 12 hexadecimal digits: 6 for the manufacturer and 6 for the card identifier.*
 
-其次，就算有了MAC地址，系统怎样才能把数据包准确送到接收方？
+The first 6 hexadecimal digits identify the manufacturer, and the last 6 are a serial number assigned by that manufacturer. A MAC address lets us identify a network interface card and the path a packet needs to take.
 
-回答是以太网采用了一种很"原始"的方式，它不是把数据包准确送到接收方，而是向本网络内所有计算机发送，让每台计算机自己判断，是否为接收方。
+### **3.4 Broadcasting**
 
-![](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052907.png)
+Defining addresses is only the first step. Several other steps are needed.
 
-上图中，1号计算机向2号计算机发送一个数据包，同一个子网络的3号、4号、5号计算机都会收到这个包。它们读取这个包的"标头"，找到接收方的MAC地址，然后与自身的MAC地址相比较，如果两者相同，就接受这个包，做进一步处理，否则就丢弃这个包。这种发送方式就叫做"广播"（broadcasting）。
+First, how does one network interface card learn another card's MAC address?
 
-有了数据包的定义、网卡的MAC地址、广播的发送方式，"链接层"就可以在多台计算机之间传送数据了。
+A protocol called ARP solves this problem. We will discuss it later. For now, remember that an Ethernet packet needs the recipient's MAC address before it can be sent.
 
-## **四、网络层**
+Second, even with a MAC address, how does the system deliver a packet to the correct recipient?
 
-### **4.1 网络层的由来**
+Ethernet uses a rather simple method in this explanation: instead of sending the packet directly to the recipient, it sends it to every computer on the local network and lets each computer decide whether it is the recipient.
 
-以太网协议，依靠MAC地址发送数据。理论上，单单依靠MAC地址，上海的网卡就可以找到洛杉矶的网卡了，技术上是可以实现的。
+![Broadcasting in the original simplified model: computer 1 sends to computer 2, while computers 3, 4, and 5 also receive the frame.](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052907.png)
 
-但是，这样做有一个重大的缺点。以太网采用广播方式发送数据包，所有成员人手一"包"，不仅效率低，而且局限在发送者所在的子网络。也就是说，如果两台计算机不在同一个子网络，广播是传不过去的。这种设计是合理的，否则互联网上每一台计算机都会收到所有包，那会引起灾难。
+*Figure: Broadcasting in the original simplified model: computer 1 sends to computer 2, while computers 3, 4, and 5 also receive the frame.*
 
-互联网是无数子网络共同组成的一个巨型网络，很像想象上海和洛杉矶的电脑会在同一个子网络，这几乎是不可能的。
+In the figure above, computer 1 sends a packet to computer 2. Computers 3, 4, and 5 on the same subnet also receive it. They read the header, find the recipient's MAC address, and compare it with their own MAC address. If the addresses match, they accept the packet for further processing; otherwise, they discard it. This method of transmission is called broadcasting.
 
-![](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052914.png)
+With a packet format, MAC addresses for network interface cards, and broadcasting as a transmission method, the Link Layer can transfer data between multiple computers.
 
-因此，必须找到一种方法，能够区分哪些MAC地址属于同一个子网络，哪些不是。如果是同一个子网络，就采用广播方式发送，否则就采用"路由"方式发送。（"路由"的意思，就是指如何向不同的子网络分发数据包，这是一个很大的主题，本文不涉及。）遗憾的是，MAC地址本身无法做到这一点。它只与厂商有关，与所处网络无关。
+## **4. The Network Layer**
 
-**这就导致了"网络层"的诞生。它的作用是引进一套新的地址，使得我们能够区分不同的计算机是否属于同一个子网络。这套地址就叫做"网络地址"，简称"网址"。**
+### **4.1 Why the Network Layer Is Needed**
 
-于是，"网络层"出现以后，每台计算机有了两种地址，一种是MAC地址，另一种是网络地址。两种地址之间没有任何联系，MAC地址是绑定在网卡上的，网络地址则是管理员分配的，它们只是随机组合在一起。
+Ethernet uses MAC addresses to send data. In theory, a network interface card in Shanghai could locate one in Los Angeles using only MAC addresses; it would be technically possible.
 
-网络地址帮助我们确定计算机所在的子网络，MAC地址则将数据包送到该子网络中的目标网卡。因此，从逻辑上可以推断，必定是先处理网络地址，然后再处理MAC地址。
+However, this approach has a major drawback. Ethernet broadcasting gives every member of the network a copy of each packet. This is inefficient and limited to the sender's subnet. If two computers are on different subnets, a broadcast cannot pass between them. This design makes sense: it would be disastrous if every computer on the Internet received every packet.
 
-### **4.2 IP协议**
+The Internet is a huge network made up of countless subnets. It is almost impossible to imagine that computers in Shanghai and Los Angeles would be on the same subnet.
 
-规定网络地址的协议，叫做IP协议。它所定义的地址，就被称为IP地址。
+![Separate subnets need routing to exchange packets.](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052914.png)
 
-目前，广泛采用的是IP协议第四版，简称IPv4。这个版本规定，网络地址由32个二进制位组成。
+*Figure: Separate subnets need routing to exchange packets.*
 
-![](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052908.png)
+We therefore need a way to distinguish which MAC addresses belong to the same subnet and which do not. Within the same subnet, packets can be broadcast; otherwise, they must be routed. Routing means deciding how to distribute packets to different subnets. It is a large topic and is beyond the scope of this article. Unfortunately, a MAC address cannot tell us this: it relates to the manufacturer, not to the network where the card is located.
 
-习惯上，我们用分成四段的十进制数表示IP地址，从0.0.0.0一直到255.255.255.255。
+**This led to the Network Layer. Its function is to introduce another set of addresses so that we can tell whether computers belong to the same subnet. These addresses are called network addresses.**
 
-互联网上的每一台计算机，都会分配到一个IP地址。这个地址分成两个部分，前一部分代表网络，后一部分代表主机。比如，IP地址172.16.254.1，这是一个32位的地址，假定它的网络部分是前24位（172.16.254），那么主机部分就是后8位（最后的那个1）。处于同一个子网络的电脑，它们IP地址的网络部分必定是相同的，也就是说172.16.254.2应该与172.16.254.1处在同一个子网络。
+Once the Network Layer is introduced, each computer has two kinds of address: a MAC address and a network address. There is no inherent relationship between them. The MAC address is associated with the network interface card, whereas the network address is assigned by an administrator. Their pairing is incidental.
 
-但是，问题在于单单从IP地址，我们无法判断网络部分。还是以172.16.254.1为例，它的网络部分，到底是前24位，还是前16位，甚至前28位，从IP地址上是看不出来的。
+The network address helps us identify the computer's subnet, while the MAC address delivers the packet to the target network interface card within that subnet. Logically, we must therefore deal with the network address first, then the MAC address.
 
-那么，怎样才能从IP地址，判断两台计算机是否属于同一个子网络呢？这就要用到另一个参数"子网掩码"（subnet mask）。
+### **4.2 IP**
 
-所谓"子网掩码"，就是表示子网络特征的一个参数。它在形式上等同于IP地址，也是一个32位二进制数字，它的网络部分全部为1，主机部分全部为0。比如，IP地址172.16.254.1，如果已知网络部分是前24位，主机部分是后8位，那么子网络掩码就是11111111.11111111.11111111.00000000，写成十进制就是255.255.255.0。
+The protocol that specifies network addresses is called IP. The addresses it defines are called IP addresses.
 
-知道"子网掩码"，我们就能判断，任意两个IP地址是否处在同一个子网络。方法是将两个IP地址与子网掩码分别进行AND运算（两个数位都为1，运算结果为1，否则为0），然后比较结果是否相同，如果是的话，就表明它们在同一个子网络中，否则就不是。
+At the time of the original article, version 4 of IP, or IPv4, was widely used. It defines a network address as a 32-bit value.
 
-比如，已知IP地址172.16.254.1和172.16.254.233的子网掩码都是255.255.255.0，请问它们是否在同一个子网络？两者与子网掩码分别进行AND运算，结果都是172.16.254.0，因此它们在同一个子网络。
+![An IPv4 address consists of four groups of 8 bits, written as four decimal numbers.](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052908.png)
 
-总结一下，IP协议的作用主要有两个，一个是为每一台计算机分配IP地址，另一个是确定哪些地址在同一个子网络。
+*Figure: An IPv4 address consists of four groups of 8 bits, written as four decimal numbers.*
 
-### **4.3 IP数据包**
+By convention, an IP address is written as four decimal numbers separated by dots, ranging from 0.0.0.0 to 255.255.255.255.
 
-根据IP协议发送的数据，就叫做IP数据包。不难想象，其中必定包括IP地址信息。
+Every computer on the Internet is assigned an IP address. The address has two parts: the first represents the network, and the second represents the host. For example, 172.16.254.1 is a 32-bit address. If its first 24 bits, 172.16.254, represent the network, then its last 8 bits, the final 1, represent the host. Computers on the same subnet must have matching network portions, so 172.16.254.2 would be on the same subnet as 172.16.254.1 in this example.
 
-但是前面说过，以太网数据包只包含MAC地址，并没有IP地址的栏位。那么是否需要修改数据定义，再添加一个栏位呢？
+The problem is that an IP address alone does not tell us which part represents the network. For 172.16.254.1, we cannot tell whether the network portion consists of the first 24 bits, the first 16 bits, or even the first 28 bits just by looking at the address.
 
-回答是不需要，我们可以把IP数据包直接放进以太网数据包的"数据"部分，因此完全不用修改以太网的规格。这就是互联网分层结构的好处：上层的变动完全不涉及下层的结构。
+How can we use IP addresses to determine whether two computers belong to the same subnet? We need another parameter: the subnet mask.
 
-具体来说，IP数据包也分为"标头"和"数据"两个部分。
+A subnet mask describes the subnet's structure. It has the same form as an IP address: a 32-bit binary number. All bits in the network portion are 1, and all bits in the host portion are 0. For example, if the network portion of 172.16.254.1 is the first 24 bits and the host portion is the last 8 bits, its subnet mask is 11111111.11111111.11111111.00000000, or 255.255.255.0 in decimal notation.
 
-![](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052909.png)
+Once we know the subnet mask, we can determine whether any two IP addresses belong to the same subnet. We perform a bitwise AND between each IP address and the subnet mask: the result is 1 only when both bits are 1, and is 0 otherwise. We then compare the results. Matching results mean the addresses are on the same subnet; different results mean they are not.
 
-"标头"部分主要包括版本、长度、IP地址等信息，"数据"部分则是IP数据包的具体内容。它放进以太网数据包后，以太网数据包就变成了下面这样。
+For example, suppose 172.16.254.1 and 172.16.254.233 both have the subnet mask 255.255.255.0. Are they on the same subnet? Applying the AND operation to each address produces 172.16.254.0 in both cases, so they are.
 
-![](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052910.png)
+To summarize, the article describes two main purposes of IP: assigning an IP address to each computer and determining which addresses belong to the same subnet.
 
-IP数据包的"标头"部分的长度为20到60字节，整个数据包的总长度最大为65,535字节。因此，理论上，一个IP数据包的"数据"部分，最长为65,515字节。前面说过，以太网数据包的"数据"部分，最长只有1500字节。因此，如果IP数据包超过了1500字节，它就需要分割成几个以太网数据包，分开发送了。
+### **4.3 IP Packets**
 
-### **4.4 ARP协议**
+Data sent according to IP takes the form of IP packets. Naturally, an IP packet includes IP address information.
 
-关于"网络层"，还有最后一点需要说明。
+Earlier, however, we saw that Ethernet packets contain MAC addresses and have no field for IP addresses. Do we need to change the Ethernet format to add such a field?
 
-因为IP数据包是放在以太网数据包里发送的，所以我们必须同时知道两个地址，一个是对方的MAC地址，另一个是对方的IP地址。通常情况下，对方的IP地址是已知的（后文会解释），但是我们不知道它的MAC地址。
+No. We can place the IP packet directly inside the Ethernet packet's data portion, so the Ethernet specification does not need to change. This illustrates the benefit of the Internet's layered structure: changes at a higher layer do not require changes to the structure of the lower layer.
 
-所以，我们需要一种机制，能够从IP地址得到MAC地址。
+More specifically, an IP packet also consists of a header and data.
 
-这里又可以分成两种情况。第一种情况，如果两台主机不在同一个子网络，那么事实上没有办法得到对方的MAC地址，只能把数据包传送到两个子网络连接处的"网关"（gateway），让网关去处理。
+![An IP packet has its own header and data portion.](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052909.png)
 
-第二种情况，如果两台主机在同一个子网络，那么我们可以用ARP协议，得到对方的MAC地址。ARP协议也是发出一个数据包（包含在以太网数据包中），其中包含它所要查询主机的IP地址，在对方的MAC地址这一栏，填的是FF:FF:FF:FF:FF:FF，表示这是一个"广播"地址。它所在子网络的每一台主机，都会收到这个数据包，从中取出IP地址，与自身的IP地址进行比较。如果两者相同，都做出回复，向对方报告自己的MAC地址，否则就丢弃这个包。
+*Figure: An IP packet has its own header and data portion.*
 
-总之，有了ARP协议之后，我们就可以得到同一个子网络内的主机MAC地址，可以把数据包发送到任意一台主机之上了。
+The header mainly contains information such as the version, length, and IP addresses. The data portion holds the packet's actual content. Once the IP packet is placed inside an Ethernet packet, the Ethernet packet looks like this:
 
-## **五、传输层**
+![An IP packet is carried inside the data portion of an Ethernet frame.](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052910.png)
 
-### **5.1 传输层的由来**
+*Figure: An IP packet is carried inside the data portion of an Ethernet frame.*
 
-有了MAC地址和IP地址，我们已经可以在互联网上任意两台主机上建立通信。
+An IP packet's header is between 20 and 60 bytes long, and the complete packet can be at most 65,535 bytes. In theory, its data portion can therefore be at most 65,515 bytes. As mentioned above, an Ethernet packet's data portion can be no longer than 1500 bytes. If an IP packet exceeds 1500 bytes, it must be split into several Ethernet packets and sent separately.
 
-接下来的问题是，同一台主机上有许多程序都需要用到网络，比如，你一边浏览网页，一边与朋友在线聊天。当一个数据包从互联网上发来的时候，你怎么知道，它是表示网页的内容，还是表示在线聊天的内容？
+### **4.4 ARP**
 
-也就是说，我们还需要一个参数，表示这个数据包到底供哪个程序（进程）使用。这个参数就叫做"端口"（port），它其实是每一个使用网卡的程序的编号。每个数据包都发到主机的特定端口，所以不同的程序就能取到自己所需要的数据。
+There is one final point to explain about the Network Layer.
 
-"端口"是0到65535之间的一个整数，正好16个二进制位。0到1023的端口被系统占用，用户只能选用大于1023的端口。不管是浏览网页还是在线聊天，应用程序会随机选用一个端口，然后与服务器的相应端口联系。
+Because an IP packet is sent inside an Ethernet packet, we need two addresses: the other party's MAC address and its IP address. Usually, we already know its IP address, as we will explain later, but we do not know its MAC address.
 
-**"传输层"的功能，就是建立"端口到端口"的通信。相比之下，"网络层"的功能是建立"主机到主机"的通信。只要确定主机和端口，我们就能实现程序之间的交流。**因此，Unix系统就把主机+端口，叫做"套接字"（socket）。有了它，就可以进行网络应用程序开发了。
+We therefore need a mechanism for obtaining a MAC address from an IP address.
 
-### **5.2 UDP协议**
+There are two cases. First, if the hosts are on different subnets, we cannot obtain the remote host's MAC address this way. Instead, we send the packet to a gateway connecting the subnets and let the gateway handle it.
 
-现在，我们必须在数据包中加入端口信息，这就需要新的协议。最简单的实现叫做UDP协议，它的格式几乎就是在数据前面，加上端口号。
+Second, if the hosts are on the same subnet, we can use ARP to obtain the other host's MAC address. ARP sends a packet, carried inside an Ethernet packet, containing the IP address of the host being queried. The destination MAC address is set to FF:FF:FF:FF:FF:FF, indicating a broadcast address. Every host on the subnet receives the packet, extracts the IP address, and compares it with its own. A host with a matching address responds with its MAC address; other hosts discard the packet.
 
-UDP数据包，也是由"标头"和"数据"两部分组成。
+With ARP, we can obtain the MAC address of a host on the same subnet and send packets to any host within that subnet.
 
-![](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052911.png)
+## **5. The Transport Layer**
 
-"标头"部分主要定义了发出端口和接收端口，"数据"部分就是具体的内容。然后，把整个UDP数据包放入IP数据包的"数据"部分，而前面说过，IP数据包又是放在以太网数据包之中的，所以整个以太网数据包现在变成了下面这样：
+### **5.1 Why the Transport Layer Is Needed**
 
-![](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052912.png)
+With MAC addresses and IP addresses, we can establish communication between any two hosts on the Internet.
 
-UDP数据包非常简单，"标头"部分一共只有8个字节，总长度不超过65,535字节，正好放进一个IP数据包。
+The next problem is that many programs on a single host may need the network at the same time. For example, you may be browsing the web while chatting with a friend online. When a packet arrives from the Internet, how do we know whether it contains web page data or chat data?
 
-### **5.3 TCP协议**
+We need another parameter that identifies the program, or process, for which the packet is intended. This parameter is called a port. In this simplified explanation, it is a number identifying a program that uses the network interface. Each packet is sent to a particular port on the host, allowing different programs to receive the data they need.
 
-UDP协议的优点是比较简单，容易实现，但是缺点是可靠性较差，一旦数据包发出，无法知道对方是否收到。
+A port is an integer between 0 and 65535, which fits in 16 bits. Ports from 0 to 1023 are reserved by the system, so users select ports greater than 1023. Whether browsing the web or chatting online, an application selects a port at random and contacts the corresponding port on the server.
 
-为了解决这个问题，提高网络可靠性，TCP协议就诞生了。这个协议非常复杂，但可以近似认为，它就是有确认机制的UDP协议，每发出一个数据包都要求确认。如果有一个数据包遗失，就收不到确认，发出方就知道有必要重发这个数据包了。
+**The Transport Layer establishes port-to-port communication. The Network Layer, by comparison, establishes host-to-host communication. Once we identify a host and a port, we can communicate between programs.** Unix systems therefore refer to the host-and-port combination as a socket. Sockets make it possible to develop network applications.
 
-因此，TCP协议能够确保数据不会遗失。它的缺点是过程复杂、实现困难、消耗较多的资源。
+### **5.2 UDP**
 
-TCP数据包和UDP数据包一样，都是内嵌在IP数据包的"数据"部分。TCP数据包没有长度限制，理论上可以无限长，但是为了保证网络的效率，通常TCP数据包的长度不会超过IP数据包的长度，以确保单个TCP数据包不必再分割。
+We now need to include port information in the packet, which requires another protocol. The simplest implementation is called UDP. Its format essentially adds port numbers before the data.
 
-## **六、应用层**
+A UDP packet also consists of a header and data.
 
-应用程序收到"传输层"的数据，接下来就要进行解读。由于互联网是开放架构，数据来源五花八门，必须事先规定好格式，否则根本无法解读。
+![A UDP packet has a header identifying the ports, followed by application data.](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052911.png)
 
-**"应用层"的作用，就是规定应用程序的数据格式。**
+*Figure: A UDP packet has a header identifying the ports, followed by application data.*
 
-举例来说，TCP协议可以为各种各样的程序传递数据，比如Email、WWW、FTP等等。那么，必须有不同协议规定电子邮件、网页、FTP数据的格式，这些应用程序协议就构成了"应用层"。
+The header primarily identifies the source and destination ports, and the data portion contains the actual content. The entire UDP packet is then placed inside an IP packet's data portion. As explained earlier, the IP packet itself is carried inside an Ethernet packet. The complete Ethernet packet now looks like this:
 
-这是最高的一层，直接面对用户。它的数据就放在TCP数据包的"数据"部分。因此，现在的以太网的数据包就变成下面这样。
+![Encapsulation: an Ethernet frame carries an IP packet, which carries a UDP packet.](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052912.png)
 
-![](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052913.png)
+*Figure: Encapsulation: an Ethernet frame carries an IP packet, which carries a UDP packet.*
 
-至此，整个互联网的五层结构，自下而上全部讲完了。这是从系统的角度，解释互联网是如何构成的。[下一篇](https://www.ruanyifeng.com/blog/2012/06/internet_protocol_suite_part_ii.html)，我反过来，从用户的角度，自上而下看看这个结构是如何发挥作用，完成一次网络数据交换的。
+A UDP packet is very simple. Its header is only 8 bytes long, and its total length cannot exceed 65,535 bytes; the original explanation describes it as fitting inside an IP packet.
 
-（完）
+### **5.3 TCP**
+
+UDP's advantage is its simplicity and ease of implementation. Its drawback is limited reliability: once a packet is sent, the sender cannot tell whether the other party has received it.
+
+TCP was developed to address this problem and improve network reliability. It is a complex protocol, but, as a rough analogy, we can think of it as UDP with acknowledgments. Each packet sent requires an acknowledgment. If a packet is lost, no acknowledgment arrives, and the sender knows that it must retransmit the packet.
+
+TCP can therefore prevent data from being lost. Its disadvantages are a complex process, a difficult implementation, and greater resource consumption.
+
+Like UDP packets, TCP packets are embedded in the data portion of IP packets. The original article describes TCP data as having no overall length limit and therefore theoretically being arbitrarily long. For network efficiency, it says that individual TCP packets are usually kept no longer than an IP packet so that they do not need to be split further.
+
+## **6. The Application Layer**
+
+Once an application receives data from the Transport Layer, it must interpret that data. Because the Internet has an open architecture, data comes from many different sources. Its format must be agreed on in advance; otherwise, it cannot be interpreted.
+
+**The Application Layer defines the formats of application data.**
+
+For example, TCP can carry data for many kinds of application, including email, the World Wide Web, and FTP. Different protocols are needed to specify the formats of email, web pages, and FTP data. These application protocols make up the Application Layer.
+
+This is the highest layer and the one that directly faces users. Its data is placed in the data portion of a TCP packet. The Ethernet packet now looks like this:
+
+![The complete layered structure: Ethernet contains IP, IP contains TCP, and TCP carries application data.](https://www.ruanyifeng.com/blogimg/asset/201205/bg2012052913.png)
+
+*Figure: The complete layered structure: Ethernet contains IP, IP contains TCP, and TCP carries application data.*
+
+We have now covered all five layers of the Internet, from bottom to top. This explains how the Internet is organized from a system perspective. In [the next article](https://www.ruanyifeng.com/blog/2012/06/internet_protocol_suite_part_ii.html), I will reverse the perspective and follow the layers from top to bottom to see how they work together to complete a network data exchange for a user.
+
+(End)

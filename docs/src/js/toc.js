@@ -14,6 +14,10 @@
         var entries = [];
         var frame = null;
 
+        function titleText() {
+            return vm.config.toc.title || options.title;
+        }
+
         function setActive(entry) {
             entries.forEach(function (item) {
                 var active = item === entry;
@@ -112,7 +116,7 @@
 
             nav = document.createElement('aside');
             nav.className = 'nav';
-            nav.setAttribute('aria-label', options.title);
+            nav.setAttribute('aria-label', titleText());
             nav.hidden = true;
             content.insertBefore(nav, content.firstChild);
 
@@ -128,6 +132,7 @@
             }
 
             nav.textContent = '';
+            nav.setAttribute('aria-label', titleText());
             nav.hidden = true;
             details = null;
             entries = [];
@@ -148,7 +153,7 @@
 
             var title = document.createElement('summary');
             title.className = 'title';
-            title.textContent = options.title;
+            title.textContent = titleText();
             details.appendChild(title);
             details.appendChild(list);
             details.addEventListener('toggle', scheduleActive);

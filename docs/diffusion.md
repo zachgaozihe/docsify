@@ -1,231 +1,231 @@
-# 生成扩散模型漫谈（一）：DDPM = 拆楼 + 建楼 <!-- {docsify-ignore-all} -->
+# Notes on Generative Diffusion Models, Part 1: DDPM = Demolition + Construction <!-- {docsify-ignore-all} -->
 
-> 作者：苏剑林。来源：[科学空间原文](https://kexue.fm/archives/9119)，原文发表于 2022-06-13。本文转载用于学习，正文保留原文语境。
+> Original author: Su Jianlin. Source: [the original Chinese article on Scientific Spaces](https://kexue.fm/archives/9119), published on 2022-06-13. This English version is a translation prepared for this website for study; the original article's perspective and historical context are preserved.
 >
-> 最近整理：2026-10-01。日期表示本站内容维护时间，文中关于模型进展的描述对应原文发表时间；全部外链尚未逐一验证。转载与引用说明保留在文末。
+> Last reviewed on this website: 2026-10-01. This is the date of the site's content maintenance, not the date of the original article. Descriptions of model development reflect the original publication date, and external links have not all been individually verified. The original republication and citation information is retained at the end.
 
-说到生成模型，[VAE](https://kexue.fm/tag/vae/)、[GAN](https://kexue.fm/tag/GAN/)可谓是“如雷贯耳”，本站也有过多次分享。此外，还有一些比较小众的选择，如[flow模型](https://kexue.fm/tag/flow/)、[VQ-VAE](https://kexue.fm/archives/6760)等，也颇有人气，尤其是VQ-VAE及其变体[VQ-GAN](https://arxiv.org/abs/2012.09841)，近期已经逐渐发展到“图像的Tokenizer”的地位，用来直接调用NLP的各种预训练方法。除了这些之外，还有一个本来更小众的选择——扩散模型（Diffusion Models）——正在生成模型领域“异军突起”，当前最先进的两个文本生成图像——OpenAI的[DALL·E 2](https://arxiv.org/abs/2204.06125)和Google的[Imagen](https://arxiv.org/abs/2205.11487)，都是基于扩散模型来完成的。
+When it comes to generative models, [VAEs](https://kexue.fm/tag/vae/) and [GANs](https://kexue.fm/tag/GAN/) are household names, and the original author's blog has discussed them many times. There are also some less mainstream choices, such as [flow models](https://kexue.fm/tag/flow/) and [VQ-VAE](https://kexue.fm/archives/6760), which have attracted considerable interest. In particular, VQ-VAE and its variant [VQ-GAN](https://arxiv.org/abs/2012.09841) have recently begun to serve as "image tokenizers," making it possible to apply a range of NLP pretraining methods directly to images. Alongside these models, another previously more obscure option—diffusion models—is rapidly gaining ground in generative modeling. The two leading text-to-image systems at the time of writing, OpenAI's [DALL·E 2](https://arxiv.org/abs/2204.06125) and Google's [Imagen](https://arxiv.org/abs/2205.11487), both use diffusion models.
 
-<!-- [![Imagen“文本-图片”的部分例子](https://kexue.fm/usr/uploads/2022/06/2782509104.jpg)](https://kexue.fm/usr/uploads/2022/06/2782509104.jpg "点击查看原图") -->
+<!-- [![Some of Imagen's text-to-image examples](https://kexue.fm/usr/uploads/2022/06/2782509104.jpg)](https://kexue.fm/usr/uploads/2022/06/2782509104.jpg "View the original image") -->
 
-<img src="https://kexue.fm/usr/uploads/2022/06/2782509104.jpg" alt="Imagen“文本-图片”的部分例子" style="width:100%;max-width:800px;">
+<img src="https://kexue.fm/usr/uploads/2022/06/2782509104.jpg" alt="Some of Imagen's text-to-image examples" style="width:100%;max-width:800px;">
 
-<!-- <img>Imagen“文本-图片”的部分例子</img> -->
+<!-- <img>Some of Imagen's text-to-image examples</img> -->
 
-从本文开始，我们开一个新坑，逐渐介绍一下近两年关于生成扩散模型的一些进展。据说生成扩散模型以数学复杂闻名，似乎比VAE、GAN要难理解得多，是否真的如此？扩散模型真的做不到一个“大白话”的理解？让我们拭目以待。
+This article begins a new series introducing some of the progress in generative diffusion models over the preceding two years. These models are said to be mathematically complex, apparently much harder to understand than VAEs or GANs. Is that really the case? Is a plain-language understanding of diffusion models impossible? Let us find out.
 
-## 新的起点
+## A New Starting Point
 
-其实我们在之前的文章[《能量视角下的GAN模型（三）：生成模型=能量模型》](https://kexue.fm/archives/6612)、[《从去噪自编码器到生成模型》](https://kexue.fm/archives/7038)也简单介绍过扩散模型。说到扩散模型，一般的文章都会提到能量模型（Energy-based Models）、得分匹配（Score Matching）、朗之万方程（Langevin Equation）等等，简单来说，是通过得分匹配等技术来训练能量模型，然后通过郎之万方程来执行从能量模型的采样。
+The original author's earlier articles, ["GANs from an Energy Perspective, Part 3: Generative Models = Energy Models"](https://kexue.fm/archives/6612) and ["From Denoising Autoencoders to Generative Models"](https://kexue.fm/archives/7038), briefly introduced diffusion models. Most articles about diffusion models mention energy-based models, score matching, Langevin equations, and related concepts. In brief, techniques such as score matching train an energy model, and a Langevin equation is then used to sample from it.
 
-从理论上来讲，这是一套很成熟的方案，原则上可以实现任何连续型对象（语音、图像等）的生成和采样。但从实践角度来看，能量函数的训练是一件很艰难的事情，尤其是数据维度比较大（比如高分辨率图像）时，很难训练出完备能量函数来；另一方面，通过朗之万方程从能量模型的采样也有很大的不确定性，得到的往往是带有噪声的采样结果。所以很长时间以来，这种传统路径的扩散模型只是在比较低分辨率的图像上做实验。
+Theoretically, this is a well-established approach that can, in principle, generate and sample any continuous object, including speech and images. In practice, however, training the energy function is difficult, especially for high-dimensional data such as high-resolution images: it is hard to learn a sufficiently complete energy function. Sampling from an energy model through a Langevin equation also involves considerable uncertainty and often produces noisy results. For a long time, diffusion models following this traditional approach were therefore tested only on relatively low-resolution images.
 
-如今生成扩散模型的大火，则是始于2020年所提出的[DDPM](https://arxiv.org/abs/2006.11239)（Denoising Diffusion Probabilistic Model），虽然也用了“扩散模型”这个名字，但事实上除了采样过程的形式有一定的相似之外，DDPM与传统基于朗之万方程采样的扩散模型可以说完全不一样，这完全是一个新的起点、新的篇章。
+The current surge of interest in generative diffusion models began with [DDPM](https://arxiv.org/abs/2006.11239), the Denoising Diffusion Probabilistic Model proposed in 2020. Although it also uses the name "diffusion model," DDPM is, apart from certain similarities in the form of its sampling procedure, quite different from traditional diffusion models that sample using Langevin equations. It represents a new starting point and a new chapter.
 
-准确来说，DDPM叫“渐变模型”更为准确一些，扩散模型这一名字反而容易造成理解上的误解，传统扩散模型的能量模型、得分匹配、朗之万方程等概念，其实跟DDPM及其后续变体都没什么关系。有意思的是，DDPM的数学框架其实在ICML2015的论文[《Deep Unsupervised Learning using Nonequilibrium Thermodynamics》](https://arxiv.org/abs/1503.03585)就已经完成了，但DDPM是首次将它在高分辨率图像生成上调试出来了，从而引导出了后面的火热。由此可见，一个模型的诞生和流行，往往还需要时间和机遇，
+In the author's view, "gradual transformation model" would describe DDPM more accurately; the name "diffusion model" can be misleading. Concepts from traditional diffusion models, such as energy models, score matching, and Langevin equations, are not needed for the treatment of DDPM and its subsequent variants given here. Interestingly, DDPM's mathematical framework had already been established in the ICML 2015 paper ["Deep Unsupervised Learning using Nonequilibrium Thermodynamics"](https://arxiv.org/abs/1503.03585). DDPM was the first to make that framework work for high-resolution image generation, which prompted the subsequent enthusiasm. The emergence and popularity of a model often require both time and opportunity.
 
-## 拆楼建楼
+## Demolition and Construction
 
-很多文章在介绍DDPM时，上来就引入转移分布，接着就是变分推断，一堆数学记号下来，先吓跑了一群人（当然，从这种介绍我们可以再次看出，DDPM实际上是VAE而不是扩散模型），再加之人们对传统扩散模型的固有印象，所以就形成了“需要很高深的数学知识”的错觉。事实上，DDPM也可以有一种很“大白话”的理解，它并不比有着“造假-鉴别”通俗类比的GAN更难。
+Many introductions to DDPM immediately bring in transition distributions and then variational inference. The ensuing mathematical notation can scare readers away. Such presentations also reveal that DDPM is, in fact, a VAE rather than a diffusion model in the traditional sense. Combined with readers' existing impressions of traditional diffusion models, this creates the illusion that advanced mathematics is essential. Yet DDPM also admits a plain-language interpretation; it is no harder to grasp than a GAN with its familiar "counterfeiter versus inspector" analogy.
 
-首先，我们想要做一个像GAN那样的生成模型，它实际上是将一个随机噪声$\boldsymbol{z}$变换成一个数据样本$\boldsymbol{x}$的过程：  
+First, suppose we want a generative model like a GAN. Its task is to transform random noise $\boldsymbol{z}$ into a data sample $\boldsymbol{x}$:
 
 $$
 \begin{equation}\require{AMScd}\begin{CD}
-\text{随机噪声}\boldsymbol{z}\quad @>\quad\text{变换}\quad>> \quad\text{样本数据}\boldsymbol{x}\\ 
-@V \text{类比} VV  @VV \text{类比} V\\ 
-\text{砖瓦水泥}\quad @>\quad\text{建设}\quad>> \quad\text{高楼大厦}\\ 
+\text{Random noise}\boldsymbol{z}\quad @>\quad\text{Transformation}\quad>> \quad\text{Data sample}\boldsymbol{x}\\
+@V \text{Analogy} VV  @VV \text{Analogy} V\\
+\text{Bricks and cement}\quad @>\quad\text{Construction}\quad>> \quad\text{Building}\\
 \end{CD}\end{equation}
 $$
 
-<!-- [![请叫我工程师](https://kexue.fm/usr/uploads/2022/06/403506617.jpeg)](https://kexue.fm/usr/uploads/2022/06/403506617.jpeg "点击查看原图") -->
-<!-- <img src="https://kexue.fm/usr/uploads/2022/06/403506617.jpeg" alt="请叫我工程师" style="width:100%;max-width:400px;align-self:center"> -->
+<!-- [![Call me an engineer](https://kexue.fm/usr/uploads/2022/06/403506617.jpeg)](https://kexue.fm/usr/uploads/2022/06/403506617.jpeg "View the original image") -->
+<!-- <img src="https://kexue.fm/usr/uploads/2022/06/403506617.jpeg" alt="Call me an engineer" style="width:100%;max-width:400px;align-self:center"> -->
 
-我们可以将这个过程想象为“建设”，其中随机噪声$\boldsymbol{z}$是砖瓦水泥等原材料，样本数据$\boldsymbol{x}$是高楼大厦，所以生成模型就是一支用原材料建设高楼大厦的施工队。
+We can think of this process as construction. Random noise $\boldsymbol{z}$ is the raw material—bricks, tiles, and cement—while the data sample $\boldsymbol{x}$ is a finished building. The generative model is a construction crew that turns the raw material into a building.
 
-这个过程肯定很难的，所以才有了那么多关于生成模型的研究。但俗话说“破坏容易建设难”，建楼你不会，拆楼你总会了吧？我们考虑将高楼大厦一步步地拆为砖瓦水泥的过程：设$\boldsymbol{x}_0$为建好的高楼大厦（数据样本），$\boldsymbol{x}_T$为拆好的砖瓦水泥（随机噪声），假设“拆楼”需要$T$步，整个过程可以表示为  
+This is certainly difficult, which is why generative models have inspired so much research. But, as the saying goes, destruction is easier than construction. You may not know how to build a building, but you can probably work out how to demolish one. Consider the process of taking a building apart, step by step, into bricks, tiles, and cement. Let $\boldsymbol{x}_0$ be the finished building, or data sample, and let $\boldsymbol{x}_T$ be the materials left after demolition, or random noise. If demolition takes $T$ steps, the entire process is
 
 $$
 \begin{equation}\boldsymbol{x} = \boldsymbol{x}_0 \to \boldsymbol{x}_1 \to \boldsymbol{x}_2 \to \cdots \to \boldsymbol{x}_{T-1} \to \boldsymbol{x}_T = \boldsymbol{z}\end{equation}
 $$
 
-建高楼大厦的难度在于，从原材料$\boldsymbol{x}_T$到最终高楼大厦$\boldsymbol{x}_0$的跨度过大，普通人很难理解$\boldsymbol{x}_T$是怎么一下子变成$\boldsymbol{x}_0$的。但是，当我们有了“拆楼”的中间过程$\boldsymbol{x}_1,\boldsymbol{x}_2,\cdots,\boldsymbol{x}_T$后，我们知道$\boldsymbol{x}_{t-1} \to \boldsymbol{x}_t$代表着拆楼的一步，那么反过来$\boldsymbol{x}_t\to \boldsymbol{x}_{t-1}$不就是建楼的一步？如果我们能学会两者之间的变换关系$\boldsymbol{x}_{t-1}=\boldsymbol{\mu}(\boldsymbol{x}_t)$，那么从$\boldsymbol{x}_T$出发，反复地执行$\boldsymbol{x}_{T-1}=\boldsymbol{\mu}(\boldsymbol{x}_T)$、$\boldsymbol{x}_{T-2}=\boldsymbol{\mu}(\boldsymbol{x}_{T-1})$、...，最终不就能造出高楼大厦$\boldsymbol{x}_0$出来？
+Building is difficult because the leap from raw material $\boldsymbol{x}_T$ to a finished building $\boldsymbol{x}_0$ is so large. It is hard to see how $\boldsymbol{x}_T$ could become $\boldsymbol{x}_0$ all at once. Once we have the intermediate demolition stages $\boldsymbol{x}_1,\boldsymbol{x}_2,\cdots,\boldsymbol{x}_T$, however, we know that $\boldsymbol{x}_{t-1} \to \boldsymbol{x}_t$ is one demolition step. Reversing it, $\boldsymbol{x}_t\to \boldsymbol{x}_{t-1}$, is therefore one construction step. If we can learn the transformation $\boldsymbol{x}_{t-1}=\boldsymbol{\mu}(\boldsymbol{x}_t)$, we can start from $\boldsymbol{x}_T$ and repeatedly apply $\boldsymbol{x}_{T-1}=\boldsymbol{\mu}(\boldsymbol{x}_T)$, $\boldsymbol{x}_{T-2}=\boldsymbol{\mu}(\boldsymbol{x}_{T-1})$, and so on, until we obtain the finished building $\boldsymbol{x}_0$.
 
-## 该怎么拆
+## How to Demolish a Building
 
-正所谓“饭要一口一口地吃”，楼也要一步一步地建，DDPM做生成模型的过程，其实跟上述“拆楼-建楼”的类比是完全一致的，它也是先反过来构建一个从数据样本渐变到随机噪声的过程，然后再考虑其逆变换，通过反复执行逆变换来完成数据样本的生成，所以本文前面才说DDPM这种做法其实应该更准确地称为“渐变模型”而不是“扩散模型”。
+Just as a meal is eaten one bite at a time, a building must be constructed one step at a time. DDPM follows exactly this demolition-and-construction analogy. It first works in the opposite direction, defining a process that gradually transforms a data sample into random noise. It then considers the reverse transformation and generates data by applying that reverse transformation repeatedly. This is why the article suggested that "gradual transformation model" might be a more accurate description of DDPM than "diffusion model."
 
-具体来说，DDPM将“拆楼”的过程建模为  
+Specifically, DDPM models demolition as
 
 $$
 \begin{equation}\boldsymbol{x}_t = \alpha_t \boldsymbol{x}_{t-1} + \beta_t \boldsymbol{\varepsilon}_t,\quad \boldsymbol{\varepsilon}_t\sim\mathcal{N}(\boldsymbol{0}, \boldsymbol{I})\label{eq:forward}\end{equation}
 $$
 
-其中有$\alpha_t,\beta_t > 0$且$\alpha_t^2 + \beta_t^2=1$，$\beta_t$通常很接近于0，代表着单步“拆楼”中对原来楼体的破坏程度，噪声$\boldsymbol{\varepsilon}_t$的引入代表着对原始信号的一种破坏，我们也可以将它理解为“原材料”，即每一步“拆楼”中我们都将$\boldsymbol{x}_{t-1}$拆解为“$\alpha_t \boldsymbol{x}_{t-1}$的楼体 + $\beta_t \boldsymbol{\varepsilon}_t$的原料”。（**提示：**本文$\alpha_t,\beta_t$的定义跟原论文不一样。）
+Here $\alpha_t,\beta_t > 0$ and $\alpha_t^2 + \beta_t^2=1$. Usually $\beta_t$ is very close to zero and represents the amount of damage to the existing structure in a single demolition step. Introducing noise $\boldsymbol{\varepsilon}_t$ corrupts the original signal. We can also think of this noise as raw material: each step turns $\boldsymbol{x}_{t-1}$ into "a remaining structure $\alpha_t \boldsymbol{x}_{t-1}$ plus raw material $\beta_t \boldsymbol{\varepsilon}_t$." (**Note:** The definitions of $\alpha_t,\beta_t$ in this article differ from those in the original paper.)
 
-反复执行这个拆楼的步骤，我们可以得到：  
+Repeating this demolition step gives
 
 $$
-\begin{equation}\begin{aligned} 
-\boldsymbol{x}_t =&\, \alpha_t \boldsymbol{x}_{t-1} + \beta_t \boldsymbol{\varepsilon}_t \\ 
-=&\, \alpha_t \big(\alpha_{t-1} \boldsymbol{x}_{t-2} + \beta_{t-1} \boldsymbol{\varepsilon}_{t-1}\big) + \beta_t \boldsymbol{\varepsilon}_t \\ 
-=&\,\cdots\\ 
-=&\,(\alpha_t\cdots\alpha_1) \boldsymbol{x}_0 + \underbrace{(\alpha_t\cdots\alpha_2)\beta_1 \boldsymbol{\varepsilon}_1 + (\alpha_t\cdots\alpha_3)\beta_2 \boldsymbol{\varepsilon}_2 + \cdots + \alpha_t\beta_{t-1} \boldsymbol{\varepsilon}_{t-1} + \beta_t \boldsymbol{\varepsilon}_t}_{\text{多个相互独立的正态噪声之和}} 
+\begin{equation}\begin{aligned}
+\boldsymbol{x}_t =&\, \alpha_t \boldsymbol{x}_{t-1} + \beta_t \boldsymbol{\varepsilon}_t \\
+=&\, \alpha_t \big(\alpha_{t-1} \boldsymbol{x}_{t-2} + \beta_{t-1} \boldsymbol{\varepsilon}_{t-1}\big) + \beta_t \boldsymbol{\varepsilon}_t \\
+=&\,\cdots\\
+=&\,(\alpha_t\cdots\alpha_1) \boldsymbol{x}_0 + \underbrace{(\alpha_t\cdots\alpha_2)\beta_1 \boldsymbol{\varepsilon}_1 + (\alpha_t\cdots\alpha_3)\beta_2 \boldsymbol{\varepsilon}_2 + \cdots + \alpha_t\beta_{t-1} \boldsymbol{\varepsilon}_{t-1} + \beta_t \boldsymbol{\varepsilon}_t}_{\text{Sum of independent Gaussian noise terms}}
 \end{aligned}\label{eq:expand}\end{equation}
 $$
 
-可能刚才读者就想问为什么叠加的系数要满足$\alpha_t^2 + \beta_t^2 = 1$了，现在我们就可以回答这个问题。首先，式中花括号所指出的部分，正好是多个独立的正态噪声之和，其均值为0，方差则分别为$(\alpha_t\cdots\alpha_2)^2\beta_1^2$、$(\alpha_t\cdots\alpha_3)^2\beta_2^2$、...、$\alpha_t^2\beta_{t-1}^2$、$\beta_t^2$；然后，我们利用一个概率论的知识——正态分布的叠加性，即上述多个独立的正态噪声之和的分布，实际上是均值为0、方差为$(\alpha_t\cdots\alpha_2)^2\beta_1^2 + (\alpha_t\cdots\alpha_3)^2\beta_2^2 + \cdots + \alpha_t^2\beta_{t-1}^2 + \beta_t^2$的正态分布；最后，在$\alpha_t^2 + \beta_t^2 = 1$恒成立之下，我们可以得到式$\eqref{eq:expand}$的各项系数平方和依旧为1，即  
+You may already have wondered why the mixing coefficients must satisfy $\alpha_t^2 + \beta_t^2 = 1$. We can now answer that question. First, the part marked by the brace is a sum of independent Gaussian noise terms. Their means are zero and their variances are $(\alpha_t\cdots\alpha_2)^2\beta_1^2$, $(\alpha_t\cdots\alpha_3)^2\beta_2^2$, ..., $\alpha_t^2\beta_{t-1}^2$, and $\beta_t^2$. Next, we use a fact from probability theory: a sum of independent Gaussian random variables is itself Gaussian. The sum above therefore has mean zero and variance $(\alpha_t\cdots\alpha_2)^2\beta_1^2 + (\alpha_t\cdots\alpha_3)^2\beta_2^2 + \cdots + \alpha_t^2\beta_{t-1}^2 + \beta_t^2$. Finally, because $\alpha_t^2 + \beta_t^2 = 1$ holds at every step, the sum of the squared coefficients in $\eqref{eq:expand}$ is still one:
 
 $$
 \begin{equation}(\alpha_t\cdots\alpha_1)^2 + (\alpha_t\cdots\alpha_2)^2\beta_1^2 + (\alpha_t\cdots\alpha_3)^2\beta_2^2 + \cdots + \alpha_t^2\beta_{t-1}^2 + \beta_t^2 = 1\end{equation}
 $$
 
-所以实际上相当于有  
+This means we can equivalently write
 
 $$
-\begin{equation}\boldsymbol{x}_t = \underbrace{(\alpha_t\cdots\alpha_1)}_{\text{记为}\bar{\alpha}_t} \boldsymbol{x}_0 + \underbrace{\sqrt{1 - (\alpha_t\cdots\alpha_1)^2}}_{\text{记为}\bar{\beta}_t} \bar{\boldsymbol{\varepsilon}}_t,\quad \bar{\boldsymbol{\varepsilon}}_t\sim\mathcal{N}(\boldsymbol{0}, \boldsymbol{I})\label{eq:skip}\end{equation}
+\begin{equation}\boldsymbol{x}_t = \underbrace{(\alpha_t\cdots\alpha_1)}_{\text{Denoted by }\bar{\alpha}_t} \boldsymbol{x}_0 + \underbrace{\sqrt{1 - (\alpha_t\cdots\alpha_1)^2}}_{\text{Denoted by }\bar{\beta}_t} \bar{\boldsymbol{\varepsilon}}_t,\quad \bar{\boldsymbol{\varepsilon}}_t\sim\mathcal{N}(\boldsymbol{0}, \boldsymbol{I})\label{eq:skip}\end{equation}
 $$
 
-这就为计算$\boldsymbol{x}_t$提供了极大的便利。另一方面，DDPM会选择适当的$\alpha_t$形式，使得有$\bar{\alpha}_T\approx 0$，这意味着经过$T$步的拆楼后，所剩的楼体几乎可以忽略了，已经全部转化为原材料$\boldsymbol{\varepsilon}$。（**提示：**本文$\bar{\alpha}_t$的定义跟原论文不一样。）
+This makes computing $\boldsymbol{x}_t$ much easier. DDPM also chooses an appropriate form for $\alpha_t$ so that $\bar{\alpha}_T\approx 0$. After $T$ demolition steps, the remaining structure is therefore negligible: almost everything has become raw material $\boldsymbol{\varepsilon}$. (**Note:** The definition of $\bar{\alpha}_t$ in this article differs from that in the original paper.)
 
-## 又如何建
+## How to Build It Again
 
-“拆楼”是$\boldsymbol{x}_{t-1}\to \boldsymbol{x}_t$的过程，这个过程我们得到很多的数据对$(\boldsymbol{x}_{t-1},\boldsymbol{x}_t)$，那么“建楼”自然就是从这些数据对中学习一个$\boldsymbol{x}_t\to \boldsymbol{x}_{t-1}$的模型。设该模型为$\boldsymbol{\mu}(\boldsymbol{x}_t)$，那么容易想到学习方案就是最小化两者的欧氏距离：  
+Demolition maps $\boldsymbol{x}_{t-1}\to \boldsymbol{x}_t$ and gives us many data pairs $(\boldsymbol{x}_{t-1},\boldsymbol{x}_t)$. Construction naturally means learning a model that maps $\boldsymbol{x}_t\to \boldsymbol{x}_{t-1}$ from those pairs. If we denote that model by $\boldsymbol{\mu}(\boldsymbol{x}_t)$, an obvious training objective is to minimize the Euclidean distance between the two:
 
 $$
 \begin{equation}\left\Vert\boldsymbol{x}_{t-1} - \boldsymbol{\mu}(\boldsymbol{x}_t)\right\Vert^2\label{eq:loss-0}\end{equation}
 $$
 
-其实这已经非常接近最终的DDPM模型了，接下来让我们将这个过程做得更精细一些。首先“拆楼”的式$\eqref{eq:forward}$可以改写为$\boldsymbol{x}_{t-1} = \frac{1}{\alpha_t}\left(\boldsymbol{x}_t  - \beta_t \boldsymbol{\varepsilon}_t\right)$，这启发我们或许可以将“建楼”模型$\boldsymbol{\mu}(\boldsymbol{x}_t)$设计成  
+We are already very close to the final DDPM model. Let us refine this process a little. First, the demolition equation $\eqref{eq:forward}$ can be rewritten as $\boldsymbol{x}_{t-1} = \frac{1}{\alpha_t}\left(\boldsymbol{x}_t  - \beta_t \boldsymbol{\varepsilon}_t\right)$. This suggests giving our construction model $\boldsymbol{\mu}(\boldsymbol{x}_t)$ the form
 
 $$
 \begin{equation}\boldsymbol{\mu}(\boldsymbol{x}_t) = \frac{1}{\alpha_t}\left(\boldsymbol{x}_t   - \beta_t \boldsymbol{\epsilon}_{\boldsymbol{\theta}}(\boldsymbol{x}_t, t)\right)\label{eq:sample}\end{equation}
 $$
 
-的形式，其中$\boldsymbol{\theta}$是训练参数，将其代入到损失函数，得到  
+where $\boldsymbol{\theta}$ denotes the trainable parameters. Substituting it into the loss function gives
 
 $$
 \begin{equation}\left\Vert\boldsymbol{x}_{t-1} - \boldsymbol{\mu}(\boldsymbol{x}_t)\right\Vert^2 = \frac{\beta_t^2}{\alpha_t^2}\left\Vert \boldsymbol{\varepsilon}_t - \boldsymbol{\epsilon}_{\boldsymbol{\theta}}(\boldsymbol{x}_t, t)\right\Vert^2\end{equation}
 $$
 
-前面的因子$\frac{\beta_t^2}{\alpha_t^2}$代表loss的权重，这个我们可以暂时忽略，最后代入结合式$\eqref{eq:skip}$和$\eqref{eq:forward}$所给出$\boldsymbol{x}_t$的表达式  
+The factor $\frac{\beta_t^2}{\alpha_t^2}$ is a loss weight, which we can ignore for the moment. Finally, combining $\eqref{eq:skip}$ and $\eqref{eq:forward}$ gives the following expression for $\boldsymbol{x}_t$:
 
 $$
 \begin{equation}\boldsymbol{x}_t = \alpha_t\boldsymbol{x}_{t-1} + \beta_t \boldsymbol{\varepsilon}_t = \alpha_t\left(\bar{\alpha}_{t-1}\boldsymbol{x}_0 + \bar{\beta}_{t-1}\bar{\boldsymbol{\varepsilon}}_{t-1}\right) + \beta_t \boldsymbol{\varepsilon}_t = \bar{\alpha}_t\boldsymbol{x}_0 + \alpha_t\bar{\beta}_{t-1}\bar{\boldsymbol{\varepsilon}}_{t-1} + \beta_t \boldsymbol{\varepsilon}_t \end{equation}
 $$
 
-得到损失函数的形式为  
+The loss function becomes
 
 $$
 \begin{equation}\left\Vert \boldsymbol{\varepsilon}_t - \boldsymbol{\epsilon}_{\boldsymbol{\theta}}(\bar{\alpha}_t\boldsymbol{x}_0 + \alpha_t\bar{\beta}_{t-1}\bar{\boldsymbol{\varepsilon}}_{t-1} + \beta_t \boldsymbol{\varepsilon}_t, t)\right\Vert^2\label{eq:loss-1}\end{equation}
 $$
 
-可能读者想问为什么要回退一步来给出$\boldsymbol{x}_t$，直接根据式$\eqref{eq:skip}$来给出$\boldsymbol{x}_t$可以吗？答案是不行，因为我们已经事先采样了$\boldsymbol{\varepsilon}_t$，而$\boldsymbol{\varepsilon}_t$跟$\bar{\boldsymbol{\varepsilon}}_t$不是相互独立的，所以给定$\boldsymbol{\varepsilon}_t$的情况下，我们不能完全独立地采样$\bar{\boldsymbol{\varepsilon}}_t$。
+You may wonder why we went back one step to express $\boldsymbol{x}_t$. Could we obtain $\boldsymbol{x}_t$ directly from $\eqref{eq:skip}$? No: we have already sampled $\boldsymbol{\varepsilon}_t$, and $\boldsymbol{\varepsilon}_t$ and $\bar{\boldsymbol{\varepsilon}}_t$ are not independent. Given $\boldsymbol{\varepsilon}_t$, we cannot sample $\bar{\boldsymbol{\varepsilon}}_t$ independently of it.
 
-## 降低方差
+## Reducing Variance
 
-原则上来说，损失函数$\eqref{eq:loss-1}$就可以完成DDPM的训练，但它在实践中可能有方差过大的风险，从而导致收敛过慢等问题。要理解这一点并不困难，只需要观察到式$\eqref{eq:loss-1}$实际上包含了4个需要采样的随机变量：
+In principle, the loss function $\eqref{eq:loss-1}$ is sufficient to train DDPM. In practice, however, its variance may be too high, leading to slow convergence and other problems. To see why, observe that $\eqref{eq:loss-1}$ contains four random variables that need to be sampled:
 
-> 1、从所有训练样本中采样一个$\boldsymbol{x}_0$；
-> 
-> 2、从正态分布$\mathcal{N}(\boldsymbol{0}, \boldsymbol{I})$中采样$\bar{\boldsymbol{\varepsilon}}_{t-1}, \boldsymbol{\varepsilon}_t$（两个不同的采样结果）；
-> 
-> 3、从$1\sim T$中采样一个$t$。
+> 1. Sample a $\boldsymbol{x}_0$ from the training data.
+>
+> 2. Sample $\bar{\boldsymbol{\varepsilon}}_{t-1}, \boldsymbol{\varepsilon}_t$ from $\mathcal{N}(\boldsymbol{0}, \boldsymbol{I})$ (two distinct samples).
+>
+> 3. Sample a $t$ from $1\sim T$.
 
-要采样的随机变量越多，就越难对损失函数做准确的估计，反过来说就是每次对损失函数进行估计的波动（方差）过大了。很幸运的是，我们可以通过一个积分技巧来将$\bar{\boldsymbol{\varepsilon}}_{t-1}, \boldsymbol{\varepsilon}_t$合并成单个正态随机变量，从而缓解一下方差大的问题。
+The more random variables we need to sample, the harder it is to estimate the loss accurately. Equivalently, each estimate fluctuates more: its variance is higher. Fortunately, an integration trick lets us combine $\bar{\boldsymbol{\varepsilon}}_{t-1}, \boldsymbol{\varepsilon}_t$ into a single Gaussian random variable and thereby reduce the variance.
 
-这个积分确实有点技巧性，但也不算复杂。由于正态分布的叠加性，我们知道$\alpha_t\bar{\beta}_{t-1}\bar{\boldsymbol{\varepsilon}}_{t-1} + \beta_t \boldsymbol{\varepsilon}_t$实际上相当于单个随机变量$\bar{\beta}_t\boldsymbol{\varepsilon}|\boldsymbol{\varepsilon}\sim \mathcal{N}(\boldsymbol{0}, \boldsymbol{I})$，同理$\beta_t \bar{\boldsymbol{\varepsilon}}_{t-1} - \alpha_t\bar{\beta}_{t-1} \boldsymbol{\varepsilon}_t$实际上相当于单个随机变量$\bar{\beta}_t\boldsymbol{\omega}|\boldsymbol{\omega}\sim \mathcal{N}(\boldsymbol{0}, \boldsymbol{I})$，并且可以验证$\mathbb{E}[\boldsymbol{\varepsilon}\boldsymbol{\omega}^{\top}]=\boldsymbol{0}$，所以这是两个相互独立的正态随机变量。
+The trick requires some care, but it is not particularly complicated. Because sums of independent Gaussian variables are Gaussian, $\alpha_t\bar{\beta}_{t-1}\bar{\boldsymbol{\varepsilon}}_{t-1} + \beta_t \boldsymbol{\varepsilon}_t$ is equivalent to a single random variable $\bar{\beta}_t\boldsymbol{\varepsilon}|\boldsymbol{\varepsilon}\sim \mathcal{N}(\boldsymbol{0}, \boldsymbol{I})$. Likewise, $\beta_t \bar{\boldsymbol{\varepsilon}}_{t-1} - \alpha_t\bar{\beta}_{t-1} \boldsymbol{\varepsilon}_t$ is equivalent to a single random variable $\bar{\beta}_t\boldsymbol{\omega}|\boldsymbol{\omega}\sim \mathcal{N}(\boldsymbol{0}, \boldsymbol{I})$. We can verify that $\mathbb{E}[\boldsymbol{\varepsilon}\boldsymbol{\omega}^{\top}]=\boldsymbol{0}$, so these two Gaussian random variables are independent.
 
-接下来，我们反过来将$\boldsymbol{\varepsilon}_t$用$\boldsymbol{\varepsilon},\boldsymbol{\omega}$重新表示出来  
+Next, express $\boldsymbol{\varepsilon}_t$ in terms of $\boldsymbol{\varepsilon},\boldsymbol{\omega}$:
 
 $$
 \begin{equation}\boldsymbol{\varepsilon}_t = \frac{(\beta_t \boldsymbol{\varepsilon} - \alpha_t\bar{\beta}_{t-1} \boldsymbol{\omega})\bar{\beta}_t}{\beta_t^2 + \alpha_t^2\bar{\beta}_{t-1}^2} = \frac{\beta_t \boldsymbol{\varepsilon} - \alpha_t\bar{\beta}_{t-1} \boldsymbol{\omega}}{\bar{\beta}_t}\end{equation}
 $$
 
-代入到式$\eqref{eq:loss-1}$得到  
+Substituting this into $\eqref{eq:loss-1}$ gives
 
 $$
-\begin{equation}\begin{aligned} 
-&\,\mathbb{E}_{\bar{\boldsymbol{\varepsilon}}_{t-1}, \boldsymbol{\varepsilon}_t\sim \mathcal{N}(\boldsymbol{0}, \boldsymbol{I})}\left[\left\Vert \boldsymbol{\varepsilon}_t - \boldsymbol{\epsilon}_{\boldsymbol{\theta}}(\bar{\alpha}_t\boldsymbol{x}_0 + \alpha_t\bar{\beta}_{t-1}\bar{\boldsymbol{\varepsilon}}_{t-1} + \beta_t \boldsymbol{\varepsilon}_t, t)\right\Vert^2\right] \\ 
-=&\,\mathbb{E}_{\boldsymbol{\omega}, \boldsymbol{\varepsilon}\sim \mathcal{N}(\boldsymbol{0}, \boldsymbol{I})}\left[\left\Vert \frac{\beta_t \boldsymbol{\varepsilon} - \alpha_t\bar{\beta}_{t-1} \boldsymbol{\omega}}{\bar{\beta}_t} - \boldsymbol{\epsilon}_{\boldsymbol{\theta}}(\bar{\alpha}_t\boldsymbol{x}_0 + \bar{\beta}_t\boldsymbol{\varepsilon}, t)\right\Vert^2\right] 
+\begin{equation}\begin{aligned}
+&\,\mathbb{E}_{\bar{\boldsymbol{\varepsilon}}_{t-1}, \boldsymbol{\varepsilon}_t\sim \mathcal{N}(\boldsymbol{0}, \boldsymbol{I})}\left[\left\Vert \boldsymbol{\varepsilon}_t - \boldsymbol{\epsilon}_{\boldsymbol{\theta}}(\bar{\alpha}_t\boldsymbol{x}_0 + \alpha_t\bar{\beta}_{t-1}\bar{\boldsymbol{\varepsilon}}_{t-1} + \beta_t \boldsymbol{\varepsilon}_t, t)\right\Vert^2\right] \\
+=&\,\mathbb{E}_{\boldsymbol{\omega}, \boldsymbol{\varepsilon}\sim \mathcal{N}(\boldsymbol{0}, \boldsymbol{I})}\left[\left\Vert \frac{\beta_t \boldsymbol{\varepsilon} - \alpha_t\bar{\beta}_{t-1} \boldsymbol{\omega}}{\bar{\beta}_t} - \boldsymbol{\epsilon}_{\boldsymbol{\theta}}(\bar{\alpha}_t\boldsymbol{x}_0 + \bar{\beta}_t\boldsymbol{\varepsilon}, t)\right\Vert^2\right]
 \end{aligned}\end{equation}
 $$
 
-注意到，现在损失函数关于$\boldsymbol{\omega}$只是二次的，所以我们可以展开然后将它的期望直接算出来，结果是  
+The loss is now only quadratic in $\boldsymbol{\omega}$, so we can expand it and compute its expectation directly. The result is
 
 $$
-\begin{equation}\frac{\beta_t^2}{\bar{\beta}_t^2}\mathbb{E}_{\boldsymbol{\varepsilon}\sim \mathcal{N}(\boldsymbol{0}, \boldsymbol{I})}\left[\left\Vert\boldsymbol{\varepsilon} - \frac{\bar{\beta}_t}{\beta_t}\boldsymbol{\epsilon}_{\boldsymbol{\theta}}(\bar{\alpha}_t\boldsymbol{x}_0 + \bar{\beta}_t\boldsymbol{\varepsilon}, t)\right\Vert^2\right]+\text{常数}\end{equation}
+\begin{equation}\frac{\beta_t^2}{\bar{\beta}_t^2}\mathbb{E}_{\boldsymbol{\varepsilon}\sim \mathcal{N}(\boldsymbol{0}, \boldsymbol{I})}\left[\left\Vert\boldsymbol{\varepsilon} - \frac{\bar{\beta}_t}{\beta_t}\boldsymbol{\epsilon}_{\boldsymbol{\theta}}(\bar{\alpha}_t\boldsymbol{x}_0 + \bar{\beta}_t\boldsymbol{\varepsilon}, t)\right\Vert^2\right]+\text{constant}\end{equation}
 $$
 
-再次省掉常数和损失函数的权重，我们得到DDPM最终所用的损失函数：  
+Dropping the constant and the loss weight once more, we obtain the loss function ultimately used by DDPM:
 
 $$
 \begin{equation}\left\Vert\boldsymbol{\varepsilon} - \frac{\bar{\beta}_t}{\beta_t}\boldsymbol{\epsilon}_{\boldsymbol{\theta}}(\bar{\alpha}_t\boldsymbol{x}_0 + \bar{\beta}_t\boldsymbol{\varepsilon}, t)\right\Vert^2\end{equation}
 $$
 
-（**提示：**原论文中的$\boldsymbol{\epsilon}_{\boldsymbol{\theta}}$实际上就是本文的$\frac{\bar{\beta}_t}{\beta_t}\boldsymbol{\epsilon}_{\boldsymbol{\theta}}$，所以大家的结果是完全一样的。）
+(**Note:** The original paper's $\boldsymbol{\epsilon}_{\boldsymbol{\theta}}$ is actually $\frac{\bar{\beta}_t}{\beta_t}\boldsymbol{\epsilon}_{\boldsymbol{\theta}}$ in this article's notation, so the two results are identical.)
 
-## 递归生成
+## Recursive Generation
 
-至此，我们算是把DDPM的整个训练流程捋清楚了。内容写了不少，你要说它很容易，那肯定说不上，但真要说非常困难的地方也几乎没有——没有用到传统的能量函数、得分匹配等工具，甚至连变分推断的知识都没有用到，只是借助“拆楼-建楼”的类比和一些基本的概率论知识，就能得到完全一样的结果。所以说，以DDPM为代表的新兴起的生成扩散模型，实际上没有很多读者想象的复杂，它可以说是我们从“拆解-重组”的过程中学习新知识的形象建模。
+We have now worked through DDPM's entire training procedure. There has been a fair amount to explain, so it would be a stretch to call it easy. Yet there is almost nothing especially difficult: we have used neither traditional energy functions and score matching nor even variational inference. The demolition-and-construction analogy, together with some basic probability theory, gives exactly the same result. Emerging generative diffusion models such as DDPM are therefore less complicated than many readers imagine. They model the familiar way we learn by taking things apart and putting them back together.
 
-训练完之后，我们就可以从一个随机噪声$\boldsymbol{x}_T\sim\mathcal{N}(\boldsymbol{0}, \boldsymbol{I})$出发执行$T$步式$\eqref{eq:sample}$来进行生成：  
+After training, we can generate a sample by starting from random noise $\boldsymbol{x}_T\sim\mathcal{N}(\boldsymbol{0}, \boldsymbol{I})$ and executing $T$ steps of $\eqref{eq:sample}$:
 
 $$
 \begin{equation}\boldsymbol{x}_{t-1} = \frac{1}{\alpha_t}\left(\boldsymbol{x}_t - \beta_t \boldsymbol{\epsilon}_{\boldsymbol{\theta}}(\boldsymbol{x}_t, t)\right)\end{equation}
 $$
 
-这对应于自回归解码中的Greedy Search。如果要进行Random Sample，那么需要补上噪声项：  
+This corresponds to greedy search in autoregressive decoding. For random sampling, we need to add a noise term:
 
 $$
 \begin{equation}\boldsymbol{x}_{t-1} = \frac{1}{\alpha_t}\left(\boldsymbol{x}_t - \beta_t \boldsymbol{\epsilon}_{\boldsymbol{\theta}}(\boldsymbol{x}_t, t)\right) + \sigma_t \boldsymbol{z},\quad \boldsymbol{z}\sim\mathcal{N}(\boldsymbol{0}, \boldsymbol{I})\end{equation}
 $$
 
-一般来说，我们可以让$\sigma_t=\beta_t$，即正向和反向的方差保持同步。这个采样过程跟传统扩散模型的朗之万采样不一样的地方在于：DDPM的采样每次都从一个随机噪声出发，需要重复迭代$T$步来得到一个样本输出；朗之万采样则是从任意一个点出发，反复迭代无限步，理论上这个迭代无限步的过程中，就把所有数据样本都被生成过了。所以两者除了形式相似外，实质上是两个截然不同的模型。
+In general, we can set $\sigma_t=\beta_t$, keeping the forward and reverse variances aligned. This sampling procedure differs from Langevin sampling in traditional diffusion models. Each DDPM sample starts from random noise and requires $T$ iterations to produce a single output. Langevin sampling starts from an arbitrary point and iterates indefinitely; theoretically, all data samples are generated over that infinite sequence of iterations. Beyond a similarity in form, these are therefore two fundamentally different models.
 
-从这个生成过程中，我们也可以感觉到它其实跟Seq2Seq的解码过程是一样的，都是串联式的自回归生成，所以生成速度是一个瓶颈，DDPM设了$T=1000$，意味着每生成一个图片，需要将$\boldsymbol{\epsilon}_{\boldsymbol{\theta}}(\boldsymbol{x}_t, t)$反复执行1000次，因此DDPM的一大缺点就是采样速度慢，后面有很多工作都致力于提升DDPM的采样速度。而说到“图片生成 + 自回归模型 + 很慢”，有些读者可能会联想到早期的[PixelRNN](https://arxiv.org/abs/1601.06759)、[PixelCNN](https://arxiv.org/abs/1606.05328)等模型，它们将图片生成转换成语言模型任务，所以同样也是递归地进行采样生成以及同样地慢。那么DDPM的这种自回归生成，跟PixelRNN/PixelCNN的自回归生成，又有什么实质区别呢？为什么PixelRNN/PixelCNN没大火起来，反而轮到了DDPM？
+This generation procedure also resembles Seq2Seq decoding: both generate autoregressively through a sequence of dependent steps. Generation speed is consequently a bottleneck. DDPM sets $T=1000$, meaning that generating a single image requires evaluating $\boldsymbol{\epsilon}_{\boldsymbol{\theta}}(\boldsymbol{x}_t, t)$ 1,000 times. Slow sampling is one of DDPM's major drawbacks, and much subsequent work has focused on accelerating it. The combination of image generation, autoregressive modeling, and slow speed may remind some readers of early models such as [PixelRNN](https://arxiv.org/abs/1601.06759) and [PixelCNN](https://arxiv.org/abs/1606.05328). These cast image generation as a language-modeling task, so they too generate recursively and slowly. What, then, is the substantive difference between DDPM's autoregressive generation and that of PixelRNN/PixelCNN? Why did DDPM become so popular while PixelRNN/PixelCNN did not?
 
-了解PixelRNN/PixelCNN的读者都知道，这类生成模型是逐个像素逐个像素地生成图片的，而自回归生成是有序的，这就意味着我们要提前给图片的每个像素排好顺序，最终的生成效果跟这个顺序紧密相关。然而，目前这个顺序只能是人为地凭着经验来设计（这类经验的设计都统称为“Inductive Bias”），暂时找不到理论最优解。换句话说，PixelRNN/PixelCNN的生成效果很受Inductive Bias的影响。但DDPM不一样，它通过“拆楼”的方式重新定义了一个自回归方向，而对于所有的像素来说则都是平权的、无偏的，所以减少了Inductive Bias的影响，从而提升了效果。此外，DDPM生成的迭代步数是固定的$T$，而PixelRNN/PixelCNN则是等于图像分辨率（$\text{宽}\times\text{高}\times{通道数}$），所以DDPM生成高分辨率图像的速度要比PixelRNN/PixelCNN快得多。
+Readers familiar with PixelRNN/PixelCNN know that these models generate an image one pixel at a time. Because autoregressive generation is ordered, we must first choose an order for the image's pixels, and the resulting quality is closely tied to that order. At present, this ordering can only be designed manually using experience—such design choices are collectively called inductive biases—and there is no known theoretically optimal solution. In other words, inductive bias strongly affects the generation quality of PixelRNN/PixelCNN. DDPM takes a different approach: it defines a new autoregressive direction through demolition, while treating all pixels equally rather than imposing a pixel order. This reduces the influence of that inductive bias and improves the results. Furthermore, DDPM uses a fixed number of generation steps $T$, whereas PixelRNN/PixelCNN require a number proportional to the image resolution ($\text{width}\times\text{height}\times{\text{number of channels}}$). DDPM therefore generates high-resolution images much faster than PixelRNN/PixelCNN.
 
-## 超参设置
+## Hyperparameter Choices
 
-这一节我们讨论一下超参的设置问题。
+This section considers the choice of hyperparameters.
 
-在DDPM中，$T=1000$，可能比很多读者的想象数值要大，那为什么要设置这么大的$T$呢？另一边，对于$\alpha_t$的选择，将原论文的设置翻译到本博客的记号上，大致上是  
+DDPM uses $T=1000$, which may be much larger than many readers would expect. Why choose such a large $T$? Meanwhile, translating the original paper's choice of $\alpha_t$ into the notation of this article gives approximately
 
 $$
 \begin{equation}\alpha_t = \sqrt{1 - \frac{0.02t}{T}}\end{equation}
 $$
 
-这是一个单调递减的函数，那为什么要选择单调递减的$\alpha_t$呢？
+This is a monotonically decreasing function. Why should $\alpha_t$ decrease monotonically?
 
-其实这两个问题有着相近的答案，跟具体的数据背景有关。简单起见，在重构的时候我们用了欧氏距离$\eqref{eq:loss-0}$作为损失函数，而一般我们用DDPM做图片生成，以往做过图片生成的读者都知道，欧氏距离并不是图片真实程度的一个好的度量，VAE用欧氏距离来重构时，往往会得到模糊的结果，除非是输入输出的两张图片非常接近，用欧氏距离才能得到比较清晰的结果，所以选择尽可能大的$T$，正是为了使得输入输出尽可能相近，减少欧氏距离带来的模糊问题。
+The two questions have similar answers, both related to the nature of the data. For simplicity, we used the Euclidean distance $\eqref{eq:loss-0}$ as the reconstruction loss. DDPM is usually used to generate images, and readers with experience in image generation know that Euclidean distance is not a good measure of realism. VAEs trained to reconstruct images with Euclidean distance often produce blurry results. Clearer results are possible when the input and output images are very close to one another. Choosing a large $T$ makes each input and output pair as similar as possible, reducing the blurring associated with Euclidean distance.
 
-选择单调递减的$\alpha_t$也有类似考虑。当$t$比较小时，$\boldsymbol{x}_t$还比较接近真实图片，所以我们要缩小$\boldsymbol{x}_{t-1}$与$\boldsymbol{x}_t$的差距，以便更适用欧氏距离$\eqref{eq:loss-0}$，因此要用较大的$\alpha_t$；当$t$比较大时，$\boldsymbol{x}_t$已经比较接近纯噪声了，噪声用欧式距离无妨，所以可以稍微增大$\boldsymbol{x}_{t-1}$与$\boldsymbol{x}_t$的差距，即可以用较小的$\alpha_t$。那么可不可以一直用较大的$\alpha_t$呢？可以是可以，但是要增大$T$。注意在推导$\eqref{eq:skip}$时，我们说过应该有$\bar{\alpha}_T\approx 0$，而我们可以直接估算  
+Choosing a monotonically decreasing $\alpha_t$ follows a similar argument. When $t$ is small, $\boldsymbol{x}_t$ is still close to a real image, so we want a small difference between $\boldsymbol{x}_{t-1}$ and $\boldsymbol{x}_t$ to make Euclidean distance $\eqref{eq:loss-0}$ more appropriate. We therefore use a larger $\alpha_t$. When $t$ is large, $\boldsymbol{x}_t$ is already close to pure noise. Euclidean distance works adequately for noise, so we can increase the difference between $\boldsymbol{x}_{t-1}$ and $\boldsymbol{x}_t$ slightly by using a smaller $\alpha_t$. Could we simply use a large $\alpha_t$ throughout? Yes, but then we would need a larger $T$. Recall that, when deriving $\eqref{eq:skip}$, we required $\bar{\alpha}_T\approx 0$. We can estimate it directly:
 
 $$
 \begin{equation}\log \bar{\alpha}_T = \sum_{t=1}^T \log\alpha_t = \frac{1}{2} \sum_{t=1}^T \log\left(1 - \frac{0.02t}{T}\right) < \frac{1}{2} \sum_{t=1}^T \left(- \frac{0.02t}{T}\right) = -0.005(T+1)\end{equation}
 $$
 
-代入$T=1000$大致是$\bar{\alpha}_T\approx e^{-5}$，这个其实就刚好达到$\approx 0$的标准。所以如果从头到尾都用较大的$\alpha_t$，那么必然要更大的$T$才能使得$\bar{\alpha}_T\approx 0$了。
+Substituting $T=1000$ gives roughly $\bar{\alpha}_T\approx e^{-5}$, which is just small enough for the $\approx 0$ criterion. If we keep $\alpha_t$ large throughout, we necessarily need a larger $T$ to make $\bar{\alpha}_T\approx 0$.
 
-最后我们留意到，“建楼”模型中的$\boldsymbol{\epsilon}_{\boldsymbol{\theta}}(\bar{\alpha}_t\boldsymbol{x}_0 + \bar{\beta}_t\boldsymbol{\varepsilon}, t)$中，我们在输入中显式地写出了$t$，这是因为原则上不同的$t$处理的是不同层次的对象，所以应该用不同的重构模型，即应该有$T$个不同的重构模型才对，于是我们共享了所有重构模型的参数，将$t$作为条件传入。按照论文附录的说法，$t$是转换成[《Transformer升级之路：1、Sinusoidal位置编码追根溯源》](https://kexue.fm/archives/8231)介绍的位置编码后，直接加到残差模块上去的。
+Finally, notice that the construction model $\boldsymbol{\epsilon}_{\boldsymbol{\theta}}(\bar{\alpha}_t\boldsymbol{x}_0 + \bar{\beta}_t\boldsymbol{\varepsilon}, t)$ explicitly takes $t$ as an input. In principle, different values of $t$ correspond to objects at different stages, so each stage should have its own reconstruction model: we would need $T$ distinct models. Instead, we share their parameters and pass $t$ as a conditioning input. According to the paper's appendix, $t$ is converted into a positional encoding of the kind described in ["The Road to Better Transformers, Part 1: Tracing the Origins of Sinusoidal Positional Encoding"](https://kexue.fm/archives/8231) and then added directly to the residual blocks.
 
-## 文章小结
+## Summary
 
-本文从“拆楼-建楼”的通俗类比中介绍了最新的生成扩散模型DDPM，在这个视角中，我们可以通过较为“大白话”的描述以及比较少的数学推导，来得到跟原始论文一模一样的结果。总的来说，本文说明了DDPM也可以像GAN一样找到一个形象类比，它既可以不用到VAE中的“变分”，也可以不用到GAN中的“概率散度”、“最优传输”，从这个意义上来看，DDPM甚至算得上比VAE、GAN还要简单。
+This article has introduced the then-new generative diffusion model DDPM through the accessible analogy of demolishing and constructing a building. From this perspective, plain-language explanations and relatively little mathematics lead to exactly the same result as the original paper. Like a GAN, DDPM has a vivid analogy that makes it easier to understand. Its derivation here needs neither the variational machinery of VAEs nor the probability divergences and optimal transport used in GANs. In that sense, DDPM can even be considered simpler than a VAE or a GAN.
 
 ---
 
-_**转载请包括本文地址：**[https://kexue.fm/archives/9119](https://kexue.fm/archives/9119 "生成扩散模型漫谈（一）：DDPM = 拆楼 + 建楼")_
+_**When republishing, include the original article's address:** [https://kexue.fm/archives/9119](https://kexue.fm/archives/9119 "Notes on Generative Diffusion Models, Part 1: DDPM = Demolition + Construction")_
 
-_**更详细的转载事宜请参考：**_[《科学空间FAQ》](https://kexue.fm/archives/6508#%E6%96%87%E7%AB%A0%E5%A6%82%E4%BD%95%E8%BD%AC%E8%BD%BD/%E5%BC%95%E7%94%A8 "《科学空间FAQ》")
+_**For more detailed republication guidance, see:**_ ["Scientific Spaces FAQ"](https://kexue.fm/archives/6508#%E6%96%87%E7%AB%A0%E5%A6%82%E4%BD%95%E8%BD%AC%E8%BD%BD/%E5%BC%95%E7%94%A8 "Scientific Spaces FAQ")
 
-**如果您觉得本文还不错，欢迎[分享](https://kexue.fm/archives/9119#share)/[打赏](https://kexue.fm/archives/9119#pay)本文。打赏并非要从中获得收益，而是希望知道科学空间获得了多少读者的真心关注。当然，如果你无视它，也不会影响你的阅读。再次表示欢迎和感谢！**
+**If you enjoyed the original article, you are welcome to [share it](https://kexue.fm/archives/9119#share) or [tip the original author](https://kexue.fm/archives/9119#pay). The author explains that tips are intended as a way to understand readers' interest in Scientific Spaces rather than as a source of income. Ignoring this invitation does not affect your ability to read the article. The original author welcomes and thanks readers for their support.**
 
-**如果您需要引用本文，请参考：**
+**To cite the original Chinese article, use:**
 
-苏剑林. (Jun. 13, 2022). 《生成扩散模型漫谈（一）：DDPM = 拆楼 + 建楼 》\[Blog post\]. Retrieved from [https://kexue.fm/archives/9119](https://kexue.fm/archives/9119)
+Su Jianlin. (Jun. 13, 2022). 《生成扩散模型漫谈（一）：DDPM = 拆楼 + 建楼 》\[Blog post\]. Retrieved from [https://kexue.fm/archives/9119](https://kexue.fm/archives/9119)
 
 @online{kexuefm-9119,  
         title={生成扩散模型漫谈（一）：DDPM = 拆楼 + 建楼},  

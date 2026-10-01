@@ -1,42 +1,44 @@
 # CS with AI
 
-这里是 Zach Gao 的计算机科学与人工智能学习知识库，记录学习路线、值得参考的公开课程、大学课程提纲和技术文章。
+This is Zach Gao's computer science and artificial intelligence learning library: learning paths, useful open courses, university course outlines and technical articles.
 
-从基础开始，逐步连接编程、系统和 AI。你可以按路线学习，也可以通过左侧目录和搜索直接查找某个主题。
+Start with the foundations, then connect programming, systems and AI. Follow the roadmap or use the sidebar and search to find a specific topic.
 
-## 从哪里开始
+## Where to start
 
-| 你的目标 | 推荐入口 |
+| Your goal | Suggested starting point |
 | --- | --- |
-| 建立完整的学习顺序 | [CS / AI 学习路线](ai_map.md) |
-| 了解课程内容与配套资料 | [课程说明与学习资源](ai.md) |
-| 查找 MIT 的 AI 相关课程 | [MIT AI 课程索引](mit_AI.md) |
-| 阅读数据库、系统与网络课程提纲 | [COMP4039 数据库](4039DIS.md) · [COMP4035 系统与网络](SaN.md) |
-| 理解具体技术主题 | [扩散模型](diffusion.md) · [互联网协议（一）](networks_1.md) · [互联网协议（二）](networks_2.md) |
+| Build a learning plan | [CS / AI roadmap](ai_map.md) |
+| Understand course topics and supporting material | [Course notes and learning resources](ai.md) |
+| Explore MIT courses related to AI | [MIT AI course index](mit_AI.md) |
+| Review databases, systems and networking | [COMP4039 Databases](4039DIS.md) · [COMP4035 Systems and Networks](SaN.md) |
+| Study a technical topic | [Diffusion models](diffusion.md) · [Internet protocols, Part I](networks_1.md) · [Internet protocols, Part II](networks_2.md) |
 
-## 学习路线
+## Learning roadmap
 
-下图是一条可参考的路径。手机上可以横向滑动图表查看文字。
+The diagram shows one possible path. On a phone, scroll within the diagram to read its labels.
 
 ```mermaid
 graph LR
-Intro[计算机基础] --> Programming[编程] --> AI[人工智能] --> ML[机器学习] --> DL[深度学习]
-DL --> CV[计算机视觉] & NLP[自然语言处理] & RL[强化学习]
-Programming --> Algorithm[算法]
-Intro --> CLI[命令行] --> System[系统] --> Network[网络]
-Intro --> Database[数据库] --> Web[Web]
+Intro[Foundations] --> Programming --> AI[Artificial intelligence] --> ML[Machine learning] --> DL[Deep learning]
+DL --> CV[Computer vision] & NLP[Natural language processing] & RL[Reinforcement learning]
+Programming --> Algorithm[Algorithms]
+Intro --> CLI[Command line] --> System[Systems] --> Network[Networks]
+Intro --> Database[Databases] --> Web
 ```
 
-[查看完整学习路线与课程清单 →](ai_map.md)
+[Explore the complete roadmap and course list →](ai_map.md)
 
-## 最近更新
+## Recent updates
 
-**2026-10-01**：整理首页与内容导航，修复章节跳转，改善手机图表阅读，并将课程页面整理成公开的学习提纲。
+**2026-10-01**: English is now the default language. Use **English / 中文** at the top to switch between the English and Chinese versions of the current page. Navigation, search and article directories follow the selected language.
 
-课程链接中保留的 2022、2023 等年份表示原课程版本。文章中的“本站整理日期”表示本次内容整理时间，不代表课程更新或所有外链已重新验证。校内资料会标注需要登录。
+The site also includes improved chapter links, mobile diagram scrolling and public course outlines.
 
-## 关于这个知识库
+Years such as 2022 and 2023 in course links refer to the original course editions. “Last organized” refers to maintenance of this library, not an update to the course or verification of every external link. Campus resources are marked when a login is required.
 
-课程资料归原作者或学校所有；转载文章保留来源。本人的整理用于连接资料与学习主题，方便循序学习和日后查阅。
+## About this library
 
-欢迎通过 [GitHub 仓库](https://github.com/zachgaozihe/docsify)查看原文，或在 [Issues](https://github.com/zachgaozihe/docsify/issues)反馈失效链接和内容问题。
+Course material belongs to its original authors or institutions. Reproduced articles retain their sources; English translations of Chinese articles are identified as translations. My notes connect resources with learning topics so they are easier to study and revisit.
+
+Read the source in the [GitHub repository](https://github.com/zachgaozihe/docsify), or report broken links and content issues through [Issues](https://github.com/zachgaozihe/docsify/issues).

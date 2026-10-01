@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <title>CS with AI · Zach Gao</title>
-    <meta name="description" content="Zach Gao 的计算机科学与人工智能学习知识库：学习路线、公开课程、大学课程笔记和技术文章。" />
+    <meta name="description" content="Zach Gao's computer science and AI learning library: learning paths, open courses, university notes and technical articles." />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta property="og:title" content="CS with AI · Zach Gao" />
-    <meta property="og:description" content="计算机科学与人工智能学习路线、公开课程和技术笔记。" />
+    <meta property="og:description" content="Computer science and AI learning paths, open courses and technical notes." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://zachgaozihe.github.io/docsify/" />
     <link rel="icon" href="_media/book1.ico" />
@@ -16,34 +16,38 @@
     <link rel="stylesheet" href="src/css/site.css" />
 </head>
 <body>
-    <div id="app">正在加载学习知识库…</div>
-    <noscript>本网站需要 JavaScript。你也可以在 <a href="https://github.com/zachgaozihe/docsify/tree/main/docs">GitHub 仓库</a>阅读 Markdown 原文。</noscript>
+    <div id="app">Loading the learning library…</div>
+    <noscript>This website requires JavaScript. Read the Markdown files in the <a href="https://github.com/zachgaozihe/docsify/tree/main/docs">GitHub repository</a>.</noscript>
     <script>
         window.$docsify = {
             name: 'CS with AI',
-            nameLink: '#/',
+            nameLink: { '/zh-cn/': '#/zh-cn/', '/': '#/' },
             themeColor: '#D7336C',
             loadSidebar: true,
             loadNavbar: true,
+            relativePath: true,
             mergeNavbar: true,
             auto2top: true,
             topMargin: 80,
             maxLevel: 3,
             subMaxLevel: 0,
+            skipLink: { '/zh-cn/': '跳到主要内容', '/': 'Skip to main content' },
             executeScript: false,
-            notFoundPage: 'src/inc/404.md',
+            // Docsify matches the resolved file URL, including the Pages base path.
+            notFoundPage: { '.*/zh-cn/': 'zh-cn/404.md', '/': 'src/inc/404.md' },
             search: {
                 paths: 'auto',
                 depth: 4,
                 maxAge: 3600000,
-                namespace: 'cs-with-ai-20261001',
-                placeholder: '搜索课程与笔记',
-                noData: '没有找到相关内容',
+                namespace: 'cs-with-ai-bilingual-20261001',
+                pathNamespaces: ['/zh-cn'],
+                placeholder: { '/zh-cn/': '搜索课程与笔记', '/': 'Search courses and notes' },
+                noData: { '/zh-cn/': '没有找到相关内容', '/': 'No matching results' },
             },
             toc: {
                 scope: '.markdown-section',
                 headings: 'h1, h2, h3, h4',
-                title: '本页目录',
+                title: 'On this page',
             },
             mermaidConfig: { querySelector: '.mermaid' },
             latex: {
@@ -59,12 +63,16 @@
             },
             plugins: [function (hook, vm) {
                 hook.afterEach(function (html) {
-                    if (vm.route.path === '/') return html;
-                    return html + '<footer class="page-footer"><a href="#/">返回首页</a><span>CS with AI · Zach Gao</span></footer>';
+                    var chinese = /^\/zh-cn(?:\/|$)/.test(vm.route.path);
+                    if (vm.route.path === '/' || vm.route.path === '/zh-cn/') return html;
+                    var home = chinese ? '#/zh-cn/' : '#/';
+                    var label = chinese ? '返回首页' : 'Back to home';
+                    return html + '<footer class="page-footer"><a href="' + home + '">' + label + '</a><span>CS with AI · Zach Gao</span></footer>';
                 });
             }],
         };
     </script>
+    <script src="src/js/i18n.js"></script>
     <!-- Keep exact versions together. Validate diagrams and formulas before upgrading. -->
     <script src="https://cdn.jsdelivr.net/npm/docsify@4.13.1/lib/docsify.min.js"></script>
     <script src="src/js/search.js"></script>

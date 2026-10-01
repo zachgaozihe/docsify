@@ -17,7 +17,9 @@ CONTENT = (
     "ai_map.md", "ai.md", "mit_AI.md", "4039DIS.md", "SaN.md",
     "diffusion.md", "networks_1.md", "networks_2.md",
 )
-PAGES = ("README.md", "_sidebar.md", "_navbar.md", "src/inc/404.md") + CONTENT
+ENGLISH_PAGES = ("README.md", "_sidebar.md", "_navbar.md", "src/inc/404.md") + CONTENT
+CHINESE_PAGES = tuple("zh-cn/" + name for name in ("README.md", "_sidebar.md", "_navbar.md", "404.md") + CONTENT)
+PAGES = ENGLISH_PAGES + CHINESE_PAGES
 FULL_VERSION = re.compile(r"\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?")
 SENSITIVE = re.compile(
     r"(?:[\"']?\bsesskey\b[\"']?\s*(?:=|:|%3[dD])"
@@ -153,6 +155,8 @@ def main():
     if not exact_file(index):
         failures.append("docs/index.html: missing")
     else:
+        if not re.search(r'<html\s+[^>]*lang=[\"\']en[\"\']', read(index)):
+            failures.append("docs/index.html: the default document language must be English")
         parser = References()
         parser.feed(re.sub(r"<!--.*?-->", "", read(index), flags=re.DOTALL))
         imports = re.findall(
@@ -174,6 +178,13 @@ def main():
                 remote_scripts.append((parts.netloc.lower(), parts.path))
         if any(count > 1 for count in Counter(remote_scripts).values()):
             failures.append("docs/index.html: duplicate remote script/import")
+
+    for name in ("_navbar.md", "zh-cn/_navbar.md"):
+        path = DOCS / name
+        if path.is_file():
+            for locale in ("en", "zh-cn"):
+                if not re.search(r'data-site-language=[\"\']' + locale + r'[\"\']', read(path)):
+                    failures.append(f"docs/{name}: missing language-switch option")
 
     public_text = {".md", ".html", ".js", ".json", ".txt", ".yaml", ".yml", ".css", ".svg"}
     for path in DOCS.rglob("*"):

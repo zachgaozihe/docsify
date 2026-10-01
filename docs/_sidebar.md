@@ -1,12 +1,12 @@
-- [首页](/)
-- 学习路线与课程
-  - [CS / AI 学习路线](ai_map.md)
-  - [课程说明与学习资源](ai.md)
-  - [MIT AI 课程索引](mit_AI.md)
-- 大学课程笔记
-  - [COMP4039 数据库](4039DIS.md)
-  - [COMP4035 系统与网络](SaN.md)
-- 技术文章
-  - [扩散模型：DDPM](diffusion.md)
-  - [互联网协议（一）](networks_1.md)
-  - [互联网协议（二）](networks_2.md)
+- [Home](/)
+- Learning paths and courses
+  - [CS / AI roadmap](ai_map.md)
+  - [Course notes and resources](ai.md)
+  - [MIT AI course index](mit_AI.md)
+- University course notes
+  - [COMP4039 Databases](4039DIS.md)
+  - [COMP4035 Systems and Networks](SaN.md)
+- Technical articles
+  - [Diffusion models: DDPM](diffusion.md)
+  - [Internet protocols, Part I](networks_1.md)
+  - [Internet protocols, Part II](networks_2.md)

@@ -54,6 +54,7 @@
     /* eslint-disable no-unused-vars */
 
     var INDEXS = {};
+    var indexGeneration = 0;
 
     var LOCAL_STORAGE = {
         EXPIRE_KEY: 'docsify.search.expires',
@@ -296,28 +297,33 @@
         return matchingResults.sort(function (r1, r2) { return r2.score - r1.score; });
     }
 
+    function resolvePathNamespace(path, pathNamespaces) {
+        if (Array.isArray(pathNamespaces)) {
+            return pathNamespaces.filter(function (prefix) {
+                var base = prefix.replace(/\/+$/, '');
+                return path === base || path.slice(0, base.length + 1) === base + '/';
+            })[0] || '';
+        }
+        if (pathNamespaces instanceof RegExp) {
+            var matches = path.match(pathNamespaces);
+            return matches ? matches[0] : '';
+        }
+        return '';
+    }
+
     function init(config, vm) {
+        // Requests started before a later navigation must not write into its index.
+        var generation = ++indexGeneration;
         var isAuto = config.paths === 'auto';
         var paths = isAuto ? getAllPaths(vm.router) : config.paths;
-
         var namespaceSuffix = '';
 
-        // only in auto mode
-        if (paths.length && isAuto && config.pathNamespaces) {
-            var path = paths[0];
-
-            if (Array.isArray(config.pathNamespaces)) {
-                namespaceSuffix =
-                    config.pathNamespaces.filter(
-                        function (prefix) { return path.slice(0, prefix.length) === prefix; }
-                    )[0] || namespaceSuffix;
-            } else if (config.pathNamespaces instanceof RegExp) {
-                var matches = path.match(config.pathNamespaces);
-
-                if (matches) {
-                    namespaceSuffix = matches[0];
-                }
-            }
+        if (isAuto && config.pathNamespaces) {
+            namespaceSuffix = resolvePathNamespace(vm.route.path, config.pathNamespaces);
+            // The article can finish rendering before Docsify replaces its sidebar.
+            paths = paths.filter(function (path) {
+                return resolvePathNamespace(path, config.pathNamespaces) === namespaceSuffix;
+            });
             var isExistHome = paths.indexOf(namespaceSuffix + '/') === -1;
             var isExistReadme = paths.indexOf(namespaceSuffix + '/README') === -1;
             if (isExistHome && isExistReadme) {
@@ -329,29 +335,48 @@
 
         var expireKey = resolveExpireKey(config.namespace) + namespaceSuffix;
         var indexKey = resolveIndexKey(config.namespace) + namespaceSuffix;
-
         var isExpired = localStorage.getItem(expireKey) < Date.now();
 
-        INDEXS = JSON.parse(localStorage.getItem(indexKey));
-
-        if (isExpired) {
+        try {
+            INDEXS = JSON.parse(localStorage.getItem(indexKey)) || {};
+        } catch (error) {
             INDEXS = {};
-        } else if (!isAuto) {
-            return;
         }
 
+        if (isAuto && config.pathNamespaces) {
+            var cleaned = false;
+            Object.keys(INDEXS).forEach(function (path) {
+                if (resolvePathNamespace(path, config.pathNamespaces) !== namespaceSuffix) {
+                    delete INDEXS[path];
+                    cleaned = true;
+                }
+            });
+            if (cleaned) localStorage.setItem(indexKey, JSON.stringify(INDEXS));
+        }
+
+        if (isExpired) INDEXS = {};
+
+        // An unexpired cache may still lack pages added since it was written.
+        var needsUpdate = paths.some(function (path) { return !INDEXS[path]; });
+        if (!needsUpdate) return;
         var len = paths.length;
         var count = 0;
 
+        function completePath() {
+            if (len === ++count) saveData(config.maxAge, expireKey, indexKey);
+        }
+
         paths.forEach(function (path) {
             if (INDEXS[path]) {
-                return count++;
+                completePath();
+                return;
             }
 
             Docsify.get(vm.router.getFile(path), false, vm.config.requestHeaders).then(
                 function (result) {
+                    if (generation !== indexGeneration) return;
                     INDEXS[path] = genIndex(path, result, vm.router, config.depth);
-                    len === ++count && saveData(config.maxAge, expireKey, indexKey);
+                    completePath();
                 }
             );
         });
@@ -526,13 +551,34 @@
         }
 
         var isAuto = CONFIG.paths === 'auto';
+        var activeSearchNamespace;
+        var sidebarPathSignature = '';
 
         hook.mounted(function (_) {
             init$1(CONFIG, vm);
             !isAuto && init(CONFIG, vm);
+            var sidebar = Docsify.dom.find('.sidebar-nav');
+            if (isAuto && CONFIG.pathNamespaces && sidebar && typeof MutationObserver !== 'undefined') {
+                // Reindex when the translated sidebar arrives after the article hook.
+                new MutationObserver(function () {
+                    var signature = getAllPaths(vm.router).join('\n');
+                    if (signature === sidebarPathSignature) return;
+                    sidebarPathSignature = signature;
+                    init(CONFIG, vm);
+                }).observe(sidebar, { childList: true, subtree: true });
+            }
         });
         hook.doneEach(function (_) {
             update(CONFIG, vm);
+            var namespace = resolveIndexKey(CONFIG.namespace) +
+                resolvePathNamespace(vm.route.path, CONFIG.pathNamespaces);
+            if (activeSearchNamespace !== undefined && activeSearchNamespace !== namespace) {
+                var input = Docsify.dom.getNode('.search input[type="search"]');
+                if (input) input.value = '';
+                doSearch();
+            }
+            activeSearchNamespace = namespace;
+            sidebarPathSignature = getAllPaths(vm.router).join('\n');
             isAuto && init(CONFIG, vm);
         });
     };

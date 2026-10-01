@@ -1,65 +1,65 @@
 # COMP4035 Systems and Networks
 
-> 最近整理：2026-10-01。本页根据 2023–2024 学年的课程主题整理，日期表示本站内容维护时间；课程与外部资源仍以原提供方为准，全部外链尚未逐一验证。
+> Last reviewed: 2026-10-01. This page organizes topics from the 2023–2024 academic year; the date records maintenance of this site. Consult the original providers for course details and external resources. Not every external link has been checked individually.
 
-这是一份系统与网络的学习主题索引，便于复习和继续补充笔记。内容从 Unix 使用开始，再介绍网络通信与分布式系统。
+This index of systems and networking topics supports revision and further notes. It starts with using Unix, then covers network communication and distributed systems.
 
-## Unix 与计算机系统
+## Unix and Computer Systems
 
-- Unix 基础：命令行、目录与文件系统。
-- Unix Filestore：文件、目录和权限。
-- Unix 与 I/O：输入输出、重定向和管道。
-- 文本处理：搜索与正则表达式。
-- 进程、线程与信号。
-- 计算机内存的基本概念。
+- Unix fundamentals: the command line, directories, and file systems.
+- Unix Filestore: files, directories, and permissions.
+- Unix and I/O: input and output, redirection, and pipes.
+- Text processing: searching and regular expressions.
+- Processes, threads, and signals.
+- Basic concepts of computer memory.
 
-学习时可把常用命令、输入输出示例和进程管理实验逐步补成自己的笔记。公开的命令行课程见 [AI / CS 资源索引 · Command Line](ai_map.md?id=command-line)。
+Build your own notes by adding common commands, input and output examples, and process-management experiments. Public command-line courses are listed in the [AI / CS Resource Index · Command Line](ai_map.md?id=command-line).
 
-## 网络通信基础
+## Network Communication Fundamentals
 
-- 信号与传输介质（Signals and Transmission Media）。
-- 可靠性与信道编码（Reliability and Channel Coding）。
-- 调制与复用（Modulation and Multiplexing）。
-- 局域网（LAN）与网络访问协调。
-- 局域网扩展。
-- 广域网技术与路由。
-- 无线网络。
+- Signals and Transmission Media.
+- Reliability and Channel Coding.
+- Modulation and Multiplexing.
+- Local Area Networks (LANs) and coordination of network access.
+- Extending local area networks.
+- Wide area network technologies and routing.
+- Wireless networks.
 
-复习重点是理解数据如何从传输介质进入网络，以及设备如何共享通信资源。
+Focus on understanding how data travels through transmission media into a network, and how devices share communication resources.
 
-## 互联网与 TCP/IP
+## The Internet and TCP/IP
 
-- 网络互联（Internetworking）。
-- IP 地址与子网。
-- 数据报转发。
-- 网络支持协议与技术。
-- TCP/IP 协议族。
+- Internetworking.
+- IP addresses and subnets.
+- Datagram forwarding.
+- Network support protocols and technologies.
+- The TCP/IP protocol suite.
 
-本站相关阅读：
+Related reading on this site:
 
-- [互联网协议入门（一）](networks_1.md)：从分层结构理解网络。
-- [互联网协议入门（二）](networks_2.md)：沿一次网页访问理解协议之间的配合。
+- [Introduction to Internet Protocols (Part One)](networks_1.md): understand networks through their layered structure.
+- [Introduction to Internet Protocols (Part Two)](networks_2.md): follow a web request to see how the protocols work together.
 
-这两篇文章是 2012 年的入门资料，适合建立基础概念。
+These two introductory articles date from 2012 and are useful for building basic concepts.
 
-## 存储与分布式系统
+## Storage and Distributed Systems
 
-- 磁盘与文件存储：HDD、SSD 的基本概念。
-- 逻辑卷（Logical Volumes）。
-- 分布式文件系统。
-- 分布式应用。
-- 目录服务。
-- 系统与网络安全。
-- FTP 的连接与通道。
-- 邮件协议：POP、IMAP、SMTP。
+- Disk and file storage: basic concepts of HDDs and SSDs.
+- Logical Volumes.
+- Distributed file systems.
+- Distributed applications.
+- Directory services.
+- Systems and network security.
+- FTP connections and channels.
+- Email protocols: POP, IMAP, SMTP.
 
-## 校内学习资源
+## University Learning Resources
 
-以下资源来自 Nottingham Moodle，需要有相应课程权限的校内账户登录。登录后能否访问取决于课程是否仍保留该资源。
+These resources are hosted on Nottingham Moodle and require a university account with access to the relevant course. Availability after signing in depends on whether the course still retains the resource.
 
-- [Unix 输入输出视频（需登录）](https://moodle.nottingham.ac.uk/pluginfile.php/9548004/mod_label/intro/UnixIO.mp4)。
-- [课程思维导图（需登录）](https://moodle.nottingham.ac.uk/pluginfile.php/9548195/mod_label/intro/ModuleMindMap.jpg)。
+- [Unix input and output video (sign-in required)](https://moodle.nottingham.ac.uk/pluginfile.php/9548004/mod_label/intro/UnixIO.mp4).
+- [Course mind map (sign-in required)](https://moodle.nottingham.ac.uk/pluginfile.php/9548195/mod_label/intro/ModuleMindMap.jpg).
 
-## 笔记维护
+## Maintaining These Notes
 
-新增笔记时，可按“概念说明 → 示例或实验 → 复习问题 → 参考来源”组织。课程年份与本站整理日期分别记录；校内材料只保留经确认适合公开的主题说明和登录入口。
+Organize new notes as “concept → example or experiment → revision questions → sources.” Record course years separately from this site's review date. For university materials, retain only topic descriptions confirmed suitable for public sharing and sign-in links.

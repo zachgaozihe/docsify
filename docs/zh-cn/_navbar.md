@@ -1,4 +1,4 @@
-- [Home](/)
-- [Roadmap](ai_map.md)
+- [首页](/zh-cn/)
+- [学习路线](ai_map.md)
 - [GitHub](https://github.com/zachgaozihe/docsify)
 - <span class="language-switch"><a href="#/" data-site-language="en" lang="en" hreflang="en">English</a> / <a href="#/zh-cn/" data-site-language="zh-cn" lang="zh-CN" hreflang="zh-CN">中文</a></span>
